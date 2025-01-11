@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: drive-guard
+  profiles:
+    active:
+      - dev
+  datasource:
+    url:
+    username:
+    password:
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  quartz:
+    job-store-type: jdbc
+    properties:
+      org:
+        quartz:
+          scheduler:
+            idleWaitTime: 7500
+          jobStore:
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+  servlet:
+    multipart:
+      max-file-size: 32MB
+springdoc:
+  swagger-ui:
+    path: /swagger
+cors:
+  urls: https://drive-guard-api.the-hero.dev, http://localhost:7001
+  methods: GET, POST, DELETE, PUT, PATCH, OPTIONS

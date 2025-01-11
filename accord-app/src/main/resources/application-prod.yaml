@@ -1,0 +1,33 @@
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:5000
+        instance:
+          service-url: http://localhost:${server.port}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+    env:
+      show-values: always
+    configprops:
+      show-values: always
+sentry:
+  environment: production
+  dsn:
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-file-size: 50MB
+      max-history: 10
+      file-name-pattern: ${LOG_FILE}.%d{yyyy-MM}.%i.gz
+server:
+  port: 7001
