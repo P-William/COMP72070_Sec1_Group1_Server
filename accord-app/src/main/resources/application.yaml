@@ -1,6 +1,6 @@
 spring:
   application:
-    name: drive-guard
+    name: accord
   profiles:
     active:
       - dev

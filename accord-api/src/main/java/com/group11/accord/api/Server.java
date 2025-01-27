@@ -1,0 +1,34 @@
+package com.group11.accord.api;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.NonNull;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Schema(
+    name = "Server",
+    description = "Represents a server in the system."
+)
+public record Server(
+
+    @NonNull
+    @Schema(description = "The server's id")
+    Long id,
+
+    @NonNull
+    @Schema(description = "The server's name")
+    String name,
+
+    @NonNull
+    @Schema(description = "The server's owner")
+    User owner,
+
+    @NonNull
+    @Schema(description = "When the server was created")
+    LocalDateTime createdAt,
+
+    @NonNull
+    @Schema(description = "The channels in the server")
+    List<Channel> channels
+) { }
