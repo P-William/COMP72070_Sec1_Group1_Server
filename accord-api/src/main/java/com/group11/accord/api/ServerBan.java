@@ -21,11 +21,11 @@ public record ServerBan(
 
     @NonNull
     @Schema(description = "The user that was banned")
-    User bannedUser,
+    Account bannedUser,
 
     @NonNull
     @Schema(description = "The user that banned the user")
-    User bannedBy,
+    Account bannedBy,
 
     @NonNull
     @Schema(description = "When the user was banned")

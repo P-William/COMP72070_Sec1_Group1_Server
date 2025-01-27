@@ -22,7 +22,7 @@ public record Server(
 
     @NonNull
     @Schema(description = "The server's owner")
-    User owner,
+    Account owner,
 
     @NonNull
     @Schema(description = "When the server was created")
