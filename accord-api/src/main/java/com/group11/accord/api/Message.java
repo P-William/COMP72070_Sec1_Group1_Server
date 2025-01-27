@@ -19,6 +19,10 @@ public record Message(
         Account account,
 
         @NonNull
+        @Schema(description = "The channel the message was sent in")
+        Channel channel,
+
+        @NonNull
         @Schema(description = "The content/body of the message")
         String content,
 
