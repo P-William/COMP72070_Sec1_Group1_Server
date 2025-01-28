@@ -30,10 +30,10 @@ Within our application websockets will be used ONLY for receiving updates regard
 All actions will be done via REST API.
 
 ## Message Related Routes
-[Messages](docs/websockets/docs/Messages.md)
+[Messages](docs/Messages.md)
 ## Server Related Routes
-[Server](docs/websockets/docs/Servers.md)
+[Server](docs/Servers.md)
 ## Channel Related Routes
-[Channel](docs/websockets/docs/Channels.md)
+[Channel](docs/Channels.md)
 ## User Related Routes
-[User](docs/websockets/docs/Users.md)
+[User](docs/User.md)
