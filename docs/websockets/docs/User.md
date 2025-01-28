@@ -14,7 +14,7 @@ For example, if you get an `account-edit` event that is the id of the user recei
 ### Friend Request Accepted
 - Description: The user's friend request has been accepted by the other user.
 - Route: `/friend-request-accepted`
-- Returns: `Account
+- Returns: `Account`
 - Return Definition: [here](https://github.com/P-William/COMP72070_Sec1_Group1_Server/tree/main/accord-api/src/main/java/com/group11/accord/api/user/Account.java)
 
 ### Friend Request Rejected
