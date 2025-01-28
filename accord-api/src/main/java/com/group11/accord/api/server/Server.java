@@ -1,5 +1,7 @@
-package com.group11.accord.api;
+package com.group11.accord.api.server;
 
+import com.group11.accord.api.channel.Channel;
+import com.group11.accord.api.user.Account;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.NonNull;
 

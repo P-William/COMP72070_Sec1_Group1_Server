@@ -1,4 +1,4 @@
-package com.group11.accord.api;
+package com.group11.accord.api.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.NonNull;

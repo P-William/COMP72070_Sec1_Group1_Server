@@ -1,4 +1,4 @@
-package com.group11.accord.api;
+package com.group11.accord.api.channel;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.NonNull;
@@ -13,6 +13,10 @@ public record Channel(
     @NonNull
     @Schema(description = "The channel's id")
     Long id,
+
+    @NonNull
+    @Schema(description = "The server the channel is part of")
+    Long serverId,
 
     @NonNull
     @Schema(description = "The channel's name")

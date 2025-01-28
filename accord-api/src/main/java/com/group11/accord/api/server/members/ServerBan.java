@@ -1,5 +1,7 @@
-package com.group11.accord.api;
+package com.group11.accord.api.server.members;
 
+import com.group11.accord.api.server.BasicServer;
+import com.group11.accord.api.user.Account;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.NonNull;
 
@@ -17,7 +19,7 @@ public record ServerBan(
 
     @NonNull
     @Schema(description = "The server the user was banned from")
-    Server server,
+    BasicServer server,
 
     @NonNull
     @Schema(description = "The user that was banned")
@@ -34,4 +36,5 @@ public record ServerBan(
     @NonNull
     @Schema(description = "The reason for the ban")
     String reason
-) { }
+) {
+}
