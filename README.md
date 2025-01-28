@@ -1,5 +1,9 @@
 # Accord
 
+## Documentation
+### [Webscocket Documentation](docs/websockets/websockets.md)
+
+
 
 ## Pre-requisites:
 - Java Development Kit (JDK) 21 found [here](https://adoptium.net/temurin/releases/?os=windows)

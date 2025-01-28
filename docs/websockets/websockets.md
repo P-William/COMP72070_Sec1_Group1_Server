@@ -18,9 +18,11 @@ So all topics related to messages will start with `wss://accord-api.the-hero.dev
 - Return Definition: [here](https://github.com/P-William/COMP72070_Sec1_Group1_Server/tree/main/accord-api/src/main/java/com/group11/accord/api/message/Message.java)
 
 
-So that means the full URL for a new message will be `wss://accord-api.the-hero.dev/message/new/{serverId}/{channelId}` 
+So that means the full URL for a new message will be `wss://accord-api.the-hero.dev/message/new/{serverId}/{channelId}`
 
 (any {variables} will be replaced with actual values when making the request)
+
+Note: Yes that means you will have to subscribe to each channel individually. This is for security, permissions, and to prevent unnecessary data transfer. But you can seasily subscribe to a list of servers or channels based on the returns you get from the REST API (use a for loop lol).
 
 
 ## Our App
