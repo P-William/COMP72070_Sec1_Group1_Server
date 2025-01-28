@@ -1,6 +1,52 @@
 
+create table account(
+--     TODO: Placeholder for connor
+    id bigint primary key
+);
 
+create sequence session_id_seq start 1 increment 1;
+create table session(
+    token text not null,
+    account_id bigint not null,
+    created_at timestamp not null,
+    foreign key (account_id)
+        references account (id),
+    primary key (token, account_id)
+);
 
+create sequence server_id_seq start 1 increment 1;
+create table server(
+    id bigint primary key,
+    name text not null,
+    owner_id bigint,
+    created_at timestamp not null,
+    foreign key (owner_id)
+        references account (id)
+);
+
+create sequence server_ban_id_seq start 1 increment 1;
+create table server_ban (
+    id bigint primary key,
+    server_id bigint not null,
+    banned_user_id bigint not null,
+    banned_by_id bigint not null,
+    reason text not null,
+    created_at timestamp not null,
+    foreign key (server_id)
+        references server (id),
+    foreign key (banned_user_id)
+        references account (id),
+    foreign key (banned_by_id)
+        references account (id)
+);
+
+create sequence channel_id_seq start 1 increment 1;
+create table channel (
+    id bigint primary key,
+    name text not null,
+    is_private boolean not null,
+    created_at timestamp not null
+);
 
 
 ----------------------------------------
