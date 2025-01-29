@@ -1,6 +1,13 @@
-create table account (
---     TODO: Placeholder for connor
-    id bigint primary key
+create sequence account_id_seq start 1 increment 1;
+create table account(
+    id bigint primary key,
+    username text unique not null,
+    password text not null,
+    salt text not null,
+    createdAt timestamp not null,
+    deleted boolean not null,
+    bio text,
+    profile_url text
 );
 
 create sequence session_id_seq start 1 increment 1;
@@ -68,6 +75,48 @@ create table user_channel(
     foreign key (channel_id)
         references channel (id),
     primary key (account_one_id, account_two_id, channel_id)
+);
+
+create type message_type as enum ('text', 'image');
+create sequence message_id_seq start 1 increment 1;
+create table message (
+    id bigint primary key,
+    author_id bigint,
+    content text not null,
+    sent_at timestamp not null,
+    channel_id bigint,
+    content_type message_type not null,
+    foreign key (author_id)
+        references account (id),
+    foreign key (channel_id)
+        references channel (id)
+);
+
+create sequence friend_req_id_seq start 1 increment 1;
+create table friend_request (
+    id bigint primary key,
+    sender_id bigint,
+    receiver_id bigint,
+    sent_at timestamp not null,
+    foreign key (sender_id)
+        references account (id),
+    foreign key (receiver_id)
+        references account (id)
+);
+
+create sequence server_inv_id_seq start 1 increment 1;
+create table server_invite (
+    id bigint primary key,
+    sender_id bigint,
+    receiver_id bigint,
+    server_id bigint,
+    sent_at timestamp not null,
+    foreign key (sender_id)
+        references account (id),
+    foreign key (receiver_id)
+        references account (id),
+    foreign key (server_id)
+        references server (id)
 );
 
 ----------------------------------------
