@@ -23,8 +23,8 @@ public class SessionJpa implements Serializable {
     private SessionId id;
 
     @ManyToOne
-    @MapsId("driverId")
-    @JoinColumn(name = "driver_id")
+    @MapsId("accountId")
+    @JoinColumn(name = "account_id")
     @NonNull
     private AccountJpa account;
 

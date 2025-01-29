@@ -1,11 +1,10 @@
-
-create table account(
+create table account (
 --     TODO: Placeholder for connor
     id bigint primary key
 );
 
 create sequence session_id_seq start 1 increment 1;
-create table session(
+create table session (
     token text not null,
     account_id bigint not null,
     created_at timestamp not null,
@@ -15,7 +14,7 @@ create table session(
 );
 
 create sequence server_id_seq start 1 increment 1;
-create table server(
+create table server (
     id bigint primary key,
     name text not null,
     owner_id bigint,
@@ -31,7 +30,7 @@ create table server_ban (
     banned_user_id bigint not null,
     banned_by_id bigint not null,
     reason text not null,
-    created_at timestamp not null,
+    banned_at timestamp not null,
     foreign key (server_id)
         references server (id),
     foreign key (banned_user_id)
@@ -48,6 +47,28 @@ create table channel (
     created_at timestamp not null
 );
 
+create table server_channel (
+    server_id bigint,
+    channel_id bigint,
+    foreign key (server_id)
+        references server (id),
+    foreign key (channel_id)
+        references channel (id),
+    primary key (server_id, channel_id)
+);
+
+create table user_channel(
+    account_one_id bigint,
+    account_two_id bigint,
+    channel_id bigint,
+    foreign key (account_one_id)
+        references account (id),
+    foreign key (account_two_id)
+        references account (id),
+    foreign key (channel_id)
+        references channel (id),
+    primary key (account_one_id, account_two_id, channel_id)
+);
 
 ----------------------------------------
 ------------ Quartz tables -------------

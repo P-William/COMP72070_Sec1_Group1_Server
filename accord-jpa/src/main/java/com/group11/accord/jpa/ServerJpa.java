@@ -34,11 +34,15 @@ public class ServerJpa implements Serializable {
     @JoinColumn(name = "owner_id")
     private AccountJpa owner;
 
-
-//    TODO: Need to decide how to handle channels vs direct messages
-//    @Setter(AccessLevel.NONE)
-//    @Builder.Default
-//    private List<ChannelJpa> channels = new ArrayList<>();
+    @Setter(AccessLevel.NONE)
+    @Builder.Default
+    @ManyToMany
+    @JoinTable(
+            name = "server_channel",
+            joinColumns = @JoinColumn(name = "server_id"),
+            inverseJoinColumns = @JoinColumn(name = "channel_id")
+    )
+    private List<ChannelJpa> channels = new ArrayList<>();
 
     @NonNull
     @Column
