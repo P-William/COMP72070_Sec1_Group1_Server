@@ -40,4 +40,14 @@ public class AuthorizationController {
             return authorizationService.loginAccount(username, password);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/password/{accountId}")
+    @Operation(summary = "Update a users password")
+    public void changePassword(
+            @PathVariable @NotNull(message = "Driver ID cannot be blank") Long accountId,
+            @RequestParam @NotNull(message = "Token cannot be blank") String token
+    ){
+
+    }
+
 }

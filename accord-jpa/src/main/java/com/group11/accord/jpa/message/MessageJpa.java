@@ -26,7 +26,7 @@ public class MessageJpa implements Serializable {
     @NonNull
     @OneToOne
     @JoinColumn(name = "author_id")
-    private AccountJpa account;
+    private AccountJpa author;
 
     @NonNull
     @Column

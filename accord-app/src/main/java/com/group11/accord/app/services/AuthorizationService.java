@@ -18,4 +18,8 @@ public class AuthorizationService {
     public String loginAccount(String username, String password){
         return "";
     }
+
+    public void changePassword(int accountId, String token, String newPassword, String oldPassword) {
+
+    }
 }
