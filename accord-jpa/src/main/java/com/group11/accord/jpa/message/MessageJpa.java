@@ -1,6 +1,6 @@
 package com.group11.accord.jpa.message;
 
-import com.group11.accord.jpa.ChannelJpa;
+import com.group11.accord.jpa.channel.ChannelJpa;
 import com.group11.accord.jpa.user.AccountJpa;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,7 +33,7 @@ public class MessageJpa implements Serializable {
     private String content;
 
     @NonNull
-    @Column(name = "sent_at")
+    @Column
     private LocalDateTime sentAt;
 
     @NonNull

@@ -30,7 +30,6 @@ public class AuthorizationController {
         return authorizationService.createAccount(newAccount);
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/login")
     @Operation(summary = "Login an existing user")
     public String loginAccount(
@@ -40,14 +39,26 @@ public class AuthorizationController {
             return authorizationService.loginAccount(username, password);
     }
 
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/password/{accountId}")
+    @PostMapping("/logout")
+    @Operation(summary = "Logout an existing user")
+    public void logoutAccount(
+            @RequestParam @NotNull(message = "Account ID is required") Long accountId,
+            @RequestParam @NotNull(message = "Token is required") String token
+    ) {
+
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping("/password/{accountId}")
     @Operation(summary = "Update a users password")
     public void changePassword(
             @PathVariable @NotNull(message = "Driver ID cannot be blank") Long accountId,
-            @RequestParam @NotNull(message = "Token cannot be blank") String token
+            @RequestParam @NotNull(message = "Token cannot be blank") String token,
+            @RequestParam @NotNull(message = "Old password required") String oldPassword,
+            @RequestParam @NotNull(message = "New password required") String newPassword
     ){
-
+        authorizationService.changePassword(accountId, token, oldPassword, newPassword);
     }
+
 
 }

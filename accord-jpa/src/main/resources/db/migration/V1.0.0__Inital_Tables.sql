@@ -77,7 +77,6 @@ create table user_channel(
     primary key (account_one_id, account_two_id, channel_id)
 );
 
-create type message_type as enum ('text', 'image');
 create sequence message_id_seq start 1 increment 1;
 create table message (
     id bigint primary key,
@@ -85,7 +84,7 @@ create table message (
     content text not null,
     sent_at timestamp not null,
     channel_id bigint,
-    content_type message_type not null,
+    content_type varchar(5) not null,
     foreign key (author_id)
         references account (id),
     foreign key (channel_id)

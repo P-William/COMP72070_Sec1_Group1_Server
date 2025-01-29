@@ -1,4 +1,4 @@
-package com.group11.accord.jpa;
+package com.group11.accord.jpa.channel;
 
 import jakarta.persistence.*;
 import lombok.*;

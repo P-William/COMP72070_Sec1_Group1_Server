@@ -30,6 +30,6 @@ public class FriendRequestJpa implements Serializable {
     private AccountJpa receiver;
 
     @NonNull
-    @Column(name = "sent_at")
+    @Column
     private LocalDateTime sentAt;
 }

@@ -2,15 +2,13 @@ package com.group11.accord.jpa.user;
 
 import jakarta.persistence.*;
 import lombok.*;
-import com.group11.accord.jpa.ChannelJpa;
-import jakarta.persistence.*;
+import com.group11.accord.jpa.channel.ChannelJpa;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.LongSummaryStatistics;
 import java.util.ArrayList;
 import java.util.List;
 

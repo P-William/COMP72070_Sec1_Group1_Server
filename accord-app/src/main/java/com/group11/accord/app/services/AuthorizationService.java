@@ -19,7 +19,7 @@ public class AuthorizationService {
         return "";
     }
 
-    public void changePassword(int accountId, String token, String newPassword, String oldPassword) {
+    public void changePassword(Long accountId, String token, String newPassword, String oldPassword) {
 
     }
 }

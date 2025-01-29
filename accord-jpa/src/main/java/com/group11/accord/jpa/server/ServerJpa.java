@@ -1,5 +1,6 @@
-package com.group11.accord.jpa;
+package com.group11.accord.jpa.server;
 
+import com.group11.accord.jpa.channel.ChannelJpa;
 import com.group11.accord.jpa.user.AccountJpa;
 import jakarta.persistence.*;
 import lombok.*;
