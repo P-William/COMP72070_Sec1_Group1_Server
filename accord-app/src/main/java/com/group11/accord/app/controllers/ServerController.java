@@ -1,5 +1,6 @@
 package com.group11.accord.app.controllers;
 
+import com.group11.accord.api.server.BasicServer;
 import com.group11.accord.api.server.Server;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
@@ -45,13 +46,14 @@ public class ServerController {
     //Read
     @GetMapping("/{accountId}")
     @Operation(description = "Retrieve all servers that a user is a member of")
-    List<Server> getServers(
+    List<BasicServer> getServers(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
         return serverService.getServers(accountId, token);
     }
 
+    //TODO add endpoint for getting all the members of a server
 
     //Update
     @ResponseStatus(HttpStatus.NO_CONTENT)

@@ -19,9 +19,11 @@ public class ChannelService {
         return null;
     }
 
-    public List<Channel> getChannels(Long accountId, String token) {
+    public List<Channel> getDmChannels(Long accountId, String token) {
         return null;
     }
+
+    public List<Channel> getServerChannels(Long serverId, Long accountId, String token) { return null; }
 
     public List<Message> getChannelMessages(Long channelId, Long accountId, String token) {
         return null;

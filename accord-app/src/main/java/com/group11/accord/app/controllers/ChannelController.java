@@ -52,12 +52,22 @@ public class ChannelController {
 
     //R
     @GetMapping("/{accountId}")
-    @Operation(description = "Retrieve all channels a user can see")
-    List<Channel> getChannels(
+    @Operation(description = "Retrieve all dm channels belonging to a user")
+    List<Channel> getDmChannels(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
-        return channelService.getChannels(accountId, token);
+        return channelService.getDmChannels(accountId, token);
+    }
+
+    @GetMapping("/{serverId}")
+    @Operation(description = "Retrieve all channels a user can see")
+    List<Channel> getServerChannels(
+            @PathVariable @NotNull(message = "Account ID is required") Long serverId,
+            @RequestParam @NotNull(message = "Account ID is required") Long accountId,
+            @RequestParam @NotNull(message = "Token is required") String token
+    ) {
+        return channelService.getServerChannels(serverId, accountId, token);
     }
 
     @GetMapping("/{channelId}/{accountId}")

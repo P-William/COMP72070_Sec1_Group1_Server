@@ -1,5 +1,6 @@
 package com.group11.accord.app.services;
 
+import com.group11.accord.api.server.BasicServer;
 import com.group11.accord.api.server.Server;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
@@ -14,7 +15,7 @@ public class ServerService {
 
     }
 
-    public List<Server> getServers(Long accountId, String token) {
+    public List<BasicServer> getServers(Long accountId, String token) {
         return null;
     }
 
