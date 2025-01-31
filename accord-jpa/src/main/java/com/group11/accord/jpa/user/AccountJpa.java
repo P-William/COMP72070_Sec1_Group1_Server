@@ -52,7 +52,7 @@ public class AccountJpa implements Serializable {
     private String bio;
 
     @Column
-    private String profile_url;
+    private String profileUrl;
 
     @Setter(AccessLevel.NONE)
     @ManyToMany

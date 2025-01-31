@@ -4,7 +4,7 @@ create table account(
     username text unique not null,
     password text not null,
     salt text not null,
-    createdAt timestamp not null,
+    created_at timestamp not null,
     deleted boolean not null,
     bio text,
     profile_url text

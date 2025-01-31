@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
         name = "AccountUpload",
         description = "Account information used for account creation"
 )
-public record NewAccount (
+public record NewAccount(
         @Schema(description = "Username for the account")
         @NotBlank(message = "Username cannot be blank")
         @Size(min = 6, max = 32, message = "Username must be between 6 and 32 characters long")
