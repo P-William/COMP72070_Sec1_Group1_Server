@@ -15,22 +15,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private static final List<String> TOPICS = List.of(
         "/server",
         "/channel",
-        "/user"
-    );
-
-    private static final List<String> APPLICATION_DESTINATION_PREFIXES = List.of(
-        "/app"
+        "/user",
+        "/message"
     );
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
-        config.setApplicationDestinationPrefixes("/app");
+        config.enableSimpleBroker(TOPICS.toArray(new String[0]));
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-            .withSockJS();
+            .setAllowedOrigins("*");
     }
 }

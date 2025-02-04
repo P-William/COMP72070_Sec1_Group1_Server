@@ -84,7 +84,7 @@ create table message (
     content text not null,
     sent_at timestamp not null,
     channel_id bigint,
-    content_type varchar(5) not null,
+    type varchar(16) not null,
     foreign key (author_id)
         references account (id),
     foreign key (channel_id)
