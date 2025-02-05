@@ -1,5 +1,7 @@
 package com.group11.accord.jpa.channel;
 
+import com.group11.accord.api.channel.Channel;
+import com.group11.accord.jpa.server.ServerJpa;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +24,11 @@ public class ChannelJpa implements Serializable {
     private Long id;
 
     @NonNull
+    @OneToOne
+    @JoinColumn(name = "server_id")
+    ServerJpa server;
+
+    @NonNull
     @Column
     String name;
 
@@ -32,4 +39,8 @@ public class ChannelJpa implements Serializable {
     @NonNull
     @Column
     LocalDateTime createdAt;
+
+    public Channel toDto(){
+        return new Channel(id, server.getId(), name, isPrivate, createdAt);
+    }
 }

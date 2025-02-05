@@ -1,5 +1,6 @@
 package com.group11.accord.jpa.message;
 
+import com.group11.accord.api.message.Message;
 import com.group11.accord.jpa.channel.ChannelJpa;
 import com.group11.accord.jpa.user.AccountJpa;
 import jakarta.persistence.*;
@@ -43,6 +44,12 @@ public class MessageJpa implements Serializable {
 
     @NonNull
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(name = "content_type")
     private MessageType type;
+
+    public Message toDto() {
+        boolean isImage = type.equals(MessageType.IMAGE);
+
+        return new Message(id, author.toDto(), channel.toDto(), content, isImage, sentAt);
+    }
 }
