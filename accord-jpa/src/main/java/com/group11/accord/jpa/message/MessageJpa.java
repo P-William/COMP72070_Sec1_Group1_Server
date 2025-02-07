@@ -44,7 +44,7 @@ public class MessageJpa implements Serializable {
 
     @NonNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "content_type")
+    @Column
     private MessageType type;
 
     public Message toDto() {
