@@ -1,7 +1,134 @@
+create sequence account_id_seq start 1 increment 1;
+create table account(
+    id bigint primary key,
+    username text unique not null,
+    password text not null,
+    salt text not null,
+    created_at timestamp not null,
+    deleted boolean not null,
+    bio text,
+    profile_url text
+);
 
+create table friend(
+    account_id bigint not null,
+    friend_id bigint not null,
+    foreign key (account_id)
+        references account (id),
+    foreign key (friend_id)
+        references account (id)
+);
 
+create sequence session_id_seq start 1 increment 1;
+create table session (
+    token text not null,
+    account_id bigint not null,
+    created_at timestamp not null,
+    foreign key (account_id)
+        references account (id),
+    primary key (token, account_id)
+);
 
+create sequence server_id_seq start 1 increment 1;
+create table server (
+    id bigint primary key,
+    name text not null,
+    owner_id bigint,
+    created_at timestamp not null,
+    foreign key (owner_id)
+        references account (id)
+);
 
+create sequence server_ban_id_seq start 1 increment 1;
+create table server_ban (
+    id bigint primary key,
+    server_id bigint not null,
+    banned_user_id bigint not null,
+    banned_by_id bigint not null,
+    reason text not null,
+    banned_at timestamp not null,
+    foreign key (server_id)
+        references server (id),
+    foreign key (banned_user_id)
+        references account (id),
+    foreign key (banned_by_id)
+        references account (id)
+);
+
+create sequence channel_id_seq start 1 increment 1;
+create table channel (
+    id bigint primary key,
+    server_id bigint,
+    name text not null,
+    is_private boolean not null,
+    created_at timestamp not null,
+    foreign key (server_id)
+                     references server (id)
+);
+
+create table server_channel (
+    server_id bigint,
+    channel_id bigint,
+    foreign key (server_id)
+        references server (id),
+    foreign key (channel_id)
+        references channel (id),
+    primary key (server_id, channel_id)
+);
+
+create table user_channel(
+    account_one_id bigint,
+    account_two_id bigint,
+    channel_id bigint,
+    foreign key (account_one_id)
+        references account (id),
+    foreign key (account_two_id)
+        references account (id),
+    foreign key (channel_id)
+        references channel (id),
+    primary key (account_one_id, account_two_id, channel_id)
+);
+
+create sequence message_id_seq start 1 increment 1;
+create table message (
+    id bigint primary key,
+    author_id bigint,
+    content text not null,
+    sent_at timestamp not null,
+    channel_id bigint,
+    type varchar(16) not null,
+    foreign key (author_id)
+        references account (id),
+    foreign key (channel_id)
+        references channel (id)
+);
+
+create sequence friend_req_id_seq start 1 increment 1;
+create table friend_request (
+    id bigint primary key,
+    sender_id bigint,
+    receiver_id bigint,
+    sent_at timestamp not null,
+    foreign key (sender_id)
+        references account (id),
+    foreign key (receiver_id)
+        references account (id)
+);
+
+create sequence server_inv_id_seq start 1 increment 1;
+create table server_invite (
+    id bigint primary key,
+    sender_id bigint,
+    receiver_id bigint,
+    server_id bigint,
+    sent_at timestamp not null,
+    foreign key (sender_id)
+        references account (id),
+    foreign key (receiver_id)
+        references account (id),
+    foreign key (server_id)
+        references server (id)
+);
 
 ----------------------------------------
 ------------ Quartz tables -------------

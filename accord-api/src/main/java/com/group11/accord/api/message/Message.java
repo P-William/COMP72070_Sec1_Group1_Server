@@ -30,7 +30,7 @@ public record Message(
 
         @NonNull
         @Schema(description = "If the message body is a link to an image or text")
-        String isImage,
+        Boolean isImage,
 
         @NonNull
         @Schema(description = "The timestamp from when the message was sent")

@@ -15,7 +15,6 @@ public record Channel(
     Long id,
 
     @NonNull
-    @Schema(description = "The server the channel is part of")
     Long serverId,
 
     @NonNull
