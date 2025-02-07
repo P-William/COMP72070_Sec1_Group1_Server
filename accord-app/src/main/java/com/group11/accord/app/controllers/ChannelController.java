@@ -30,7 +30,7 @@ public class ChannelController {
 
     //C
     @PostMapping("/server/{serverId}")
-    @Operation(description = "Create a new channel within a server")
+    @Operation(summary = "Create a new channel within a server")
     Channel createServerChannel(
             @PathVariable @NotNull(message = "A server ID is required") Long serverId,
             @RequestParam @NotNull(message = "Account ID is required") Long accountId,
@@ -41,7 +41,7 @@ public class ChannelController {
     }
 
     @PostMapping("/dm/{accountId}")
-    @Operation(description = "Create a new dm between users")
+    @Operation(summary = "Create a new dm between users")
     Channel createDmChannel(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token,
@@ -52,7 +52,7 @@ public class ChannelController {
 
     //R
     @GetMapping("/{accountId}")
-    @Operation(description = "Retrieve all dm channels belonging to a user")
+    @Operation(summary= "Retrieve all dm channels belonging to a user")
     List<Channel> getDmChannels(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
@@ -61,7 +61,7 @@ public class ChannelController {
     }
 
     @GetMapping("/{serverId}")
-    @Operation(description = "Retrieve all channels a user can see")
+    @Operation(summary = "Retrieve all channels a user can see")
     List<Channel> getServerChannels(
             @PathVariable @NotNull(message = "Account ID is required") Long serverId,
             @RequestParam @NotNull(message = "Account ID is required") Long accountId,
@@ -71,7 +71,7 @@ public class ChannelController {
     }
 
     @GetMapping("/{channelId}/{accountId}")
-    @Operation(description = "Get all the messages from a channel")
+    @Operation(summary = "Get all the messages from a channel")
     List<Message> getChannelMessages(
         @PathVariable @NotNull(message = "The channel ID is required") Long channelId,
         @PathVariable @NotNull(message = "Account ID is required") Long accountId,
@@ -82,7 +82,7 @@ public class ChannelController {
 
     //U
     @PatchMapping("/{channelId}")
-    @Operation(description = "Change the name of a channel")
+    @Operation(summary = "Change the name of a channel")
     void changeChannelName(
             @PathVariable @NotNull(message = "The id of the channel to change is needed") Long channelId,
             @RequestParam @NotNull(message = "Account ID is required") Long accountId,
@@ -94,7 +94,7 @@ public class ChannelController {
 
     //D
     @DeleteMapping("/{channelId}")
-    @Operation(description = "Delete a channel")
+    @Operation(summary = "Delete a channel")
     void deleteChannel(
         @PathVariable @NotNull(message = "The ID of the channel is required") Long channelId,
         @RequestParam @NotNull(message = "Account ID is required") Long accountId,
@@ -105,7 +105,7 @@ public class ChannelController {
 
     //Operations dealing with messages
     @PostMapping("/text/{channelId}")
-    @Operation(description = "Send a text based message to a channel")
+    @Operation(summary = "Send a text based message to a channel")
     void sendTextMessage(
             @PathVariable @NotNull(message = "The ID of the channel is required") Long channelId,
             @RequestParam @NotNull(message = "Account ID is required") Long accountId,
@@ -116,7 +116,7 @@ public class ChannelController {
     }
 
     @PostMapping("/image/{channelId}")
-    @Operation(description = "Send a image in a message to a channel")
+    @Operation(summary = "Send a image in a message to a channel")
     void sendImageMessage(
             @PathVariable @NotNull(message = "The ID of the channel is required") Long channelId,
             @RequestParam @NotNull(message = "Account ID is required") Long accountId,

@@ -1,5 +1,6 @@
 package com.group11.accord.jpa.user;
 
+import com.group11.accord.api.user.friend.FriendRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,4 +33,16 @@ public class FriendRequestJpa implements Serializable {
     @NonNull
     @Column
     private LocalDateTime sentAt;
+
+    public static FriendRequestJpa create(AccountJpa sender, AccountJpa receiver) {
+        return FriendRequestJpa.builder()
+                .sender(sender)
+                .receiver(receiver)
+                .sentAt(LocalDateTime.now())
+                .build();
+    }
+
+    public FriendRequest toDto() {
+        return new FriendRequest(id, sender.toDto(), receiver.toDto(), sentAt);
+    }
 }

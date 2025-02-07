@@ -1,5 +1,7 @@
 package com.group11.accord.jpa.server;
 
+import com.group11.accord.api.channel.Channel;
+import com.group11.accord.api.server.Server;
 import com.group11.accord.jpa.channel.ChannelJpa;
 import com.group11.accord.jpa.user.AccountJpa;
 import jakarta.persistence.*;
@@ -48,4 +50,20 @@ public class ServerJpa implements Serializable {
     @NonNull
     @Column
     private LocalDateTime createdAt;
+
+    public static ServerJpa create(String name, AccountJpa owner) {
+        return ServerJpa.builder()
+                .name(name)
+                .owner(owner)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    public Server toDto(){
+        List<Channel> channelDtos = new ArrayList<>();
+        for (ChannelJpa channel : channels){
+            channelDtos.add(channel.toDto());
+        }
+        return new Server(id, name, owner.toDto(), createdAt, channelDtos);
+    }
 }

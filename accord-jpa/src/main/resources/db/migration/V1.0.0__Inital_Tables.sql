@@ -10,6 +10,15 @@ create table account(
     profile_url text
 );
 
+create table friend(
+    account_id bigint not null,
+    friend_id bigint not null,
+    foreign key (account_id)
+        references account (id),
+    foreign key (friend_id)
+        references account (id)
+);
+
 create sequence session_id_seq start 1 increment 1;
 create table session (
     token text not null,
@@ -49,9 +58,12 @@ create table server_ban (
 create sequence channel_id_seq start 1 increment 1;
 create table channel (
     id bigint primary key,
+    server_id bigint,
     name text not null,
     is_private boolean not null,
-    created_at timestamp not null
+    created_at timestamp not null,
+    foreign key (server_id)
+                     references server (id)
 );
 
 create table server_channel (

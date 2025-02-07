@@ -1,5 +1,6 @@
 package com.group11.accord.jpa.user;
 
+import com.group11.accord.api.user.Account;
 import jakarta.persistence.*;
 import lombok.*;
 import com.group11.accord.jpa.channel.ChannelJpa;
@@ -55,6 +56,7 @@ public class AccountJpa implements Serializable {
     private String profileUrl;
 
     @Setter(AccessLevel.NONE)
+    @Builder.Default
     @ManyToMany
     @JoinTable(
         name = "user_channel",
@@ -62,4 +64,29 @@ public class AccountJpa implements Serializable {
         inverseJoinColumns = @JoinColumn(name = "channel_id")
     )
     private List<ChannelJpa> directMessages = new ArrayList<>();
+
+    @Builder.Default
+    @ManyToMany
+    @JoinTable(
+            name = "friend",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id")
+    )
+    private List<AccountJpa> friends = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "friends")
+    private List<AccountJpa> friendOf = new ArrayList<>();
+
+    public static AccountJpa create(String username, String password, String salt) {
+        return AccountJpa.builder()
+                .username(username)
+                .password(password)
+                .salt(salt)
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    public Account toDto(){
+        return new Account(id, username, bio, profileUrl);
+    }
 }

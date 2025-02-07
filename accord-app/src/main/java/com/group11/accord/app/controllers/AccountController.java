@@ -28,7 +28,7 @@ public class AccountController {
     AccountService accountService;
 
     @PostMapping("/username/{accountId}")
-    @Operation(description = "Update a users username")
+    @Operation(summary = "Update a users username")
     void changeUsername(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token,
@@ -38,7 +38,7 @@ public class AccountController {
     }
 
     @GetMapping("/{accountId}")
-    @Operation(description = "Retrieve the account for a user")
+    @Operation(summary = "Retrieve the account for a user")
     Account getAccount(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
@@ -47,7 +47,7 @@ public class AccountController {
     }
 
     @GetMapping("/friend/{accountId}")
-    @Operation(description = "Get a list of all a users friends")
+    @Operation(summary = "Get a list of all a users friends")
     List<Account> getFriends(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
@@ -56,7 +56,7 @@ public class AccountController {
     }
 
     @GetMapping("/friend/requests/{accountId}")
-    @Operation(description = "Get a list of all friend requests")
+    @Operation(summary = "Get a list of all friend requests")
     List<FriendRequest> getFriendRequests(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
@@ -66,7 +66,7 @@ public class AccountController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/friend/request/{accountId}")
-    @Operation(description = "Send a friend request to a specific user via their username")
+    @Operation(summary = "Send a friend request to a specific user via their username")
     void sendFriendRequest(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token,
@@ -77,7 +77,7 @@ public class AccountController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/friend/request/{accountId}")
-    @Operation(description = "Accept a friend request")
+    @Operation(summary = "Accept a friend request")
     void acceptFriendRequest(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token,
@@ -87,7 +87,7 @@ public class AccountController {
     }
 
     @GetMapping("/server/invite/{accountId}")
-    @Operation(description = "Get a list of all server invites")
+    @Operation(summary = "Get a list of all server invites")
     List<ServerInvite> getServerInvites(
         @PathVariable @NotNull(message = "Account ID is required") Long accountId,
         @RequestParam @NotNull(message = "Token is required") String token

@@ -34,7 +34,7 @@ public class ServerController {
     //Create
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{accountId}")
-    @Operation(description = "Create a new server")
+    @Operation(summary = "Create a new server")
     void createServer(
             @PathVariable @NotNull(message = "Account of the server owner ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token,
@@ -45,7 +45,7 @@ public class ServerController {
 
     //Read
     @GetMapping("/{accountId}")
-    @Operation(description = "Retrieve all servers that a user is a member of")
+    @Operation(summary = "Retrieve all servers that a user is a member of")
     List<BasicServer> getServers(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
@@ -58,7 +58,7 @@ public class ServerController {
     //Update
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/name/{serverId}")
-    @Operation(description = "Change the name of a server")
+    @Operation(summary = "Change the name of a server")
     void changeServerName(
             @PathVariable @NotNull(message = "Server ID is required") Long serverId,
             @RequestParam @NotNull(message = "Account ID of the server owner is required") Long accountId,
@@ -70,7 +70,7 @@ public class ServerController {
 
     //Delete
     @DeleteMapping("/{serverId}")
-    @Operation(description = "Delete a server")
+    @Operation(summary = "Delete a server")
     void deleteServer(
             @PathVariable @NotNull(message = "ID of the server to delete is required") Long serverId,
             @RequestParam @NotNull(message = "Account ID of the server owner is required") Long accountId,
@@ -81,7 +81,7 @@ public class ServerController {
 
     //Owner Operations dealing with members of a server
     @PostMapping("/kick/{serverId}")
-    @Operation(description = "Kick a user from a server")
+    @Operation(summary = "Kick a user from a server")
     void kickFromServer(
             @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
             @RequestParam @NotNull(message = "Owner's account ID is required") Long accountId,
@@ -92,7 +92,7 @@ public class ServerController {
     }
 
     @PostMapping("/ban/{serverId}")
-    @Operation(description = "Ban a user from a server")
+    @Operation(summary = "Ban a user from a server")
     void banFromServer(
             @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
             @RequestParam @NotNull(message = "Owner's account ID is required") Long accountId,
@@ -103,7 +103,7 @@ public class ServerController {
     }
 
     @PostMapping("/{serverId}/{accountId}")
-    @Operation(description = "Leave a server")
+    @Operation(summary = "Leave a server")
     void leaveServer(
             @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
