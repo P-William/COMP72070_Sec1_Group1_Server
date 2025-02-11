@@ -12,6 +12,8 @@ public interface FriendRequestRepository extends JpaRepository<FriendRequestJpa,
     boolean existsBySender(AccountJpa sender);
     boolean existsByReceiver(AccountJpa receiver);
 
+    boolean existsBySenderAndReceiver(AccountJpa sender, AccountJpa receiver);
+
     List<FriendRequestJpa> findAllBySender(AccountJpa sender);
     List<FriendRequestJpa> findAllByReceiver(AccountJpa receiver);
 }

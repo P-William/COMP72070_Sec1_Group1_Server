@@ -75,7 +75,26 @@ public class AccountService {
     }
 
     public void sendFriendRequest(Long id, String token, String username) {
+        AccountJpa sender = accountRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(id)));
 
+        authorizationService.validateSession(id, token);
+
+        //Find receiver
+        AccountJpa receiver = accountRepository.findByUsername(username)
+                        .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_USERNAME.formatted(username)));
+
+        //In case client side accidentally sends a friend request to an existing user
+        if (!accountRepository.existsByFriendOf(receiver)){
+            throw new EntityExistsException(ErrorMessages.ALREADY_FRIENDS.formatted(receiver.getUsername()));
+        }
+
+        //Check if a friend request to this user has already been sent by the sender
+        if (!friendRequestRepository.existsBySenderAndReceiver(sender, receiver)) {
+            throw new EntityExistsException(ErrorMessages.FRIEND_REQUEST_ALREADY_EXISTS.formatted(receiver.getUsername()));
+        }
+
+        friendRequestRepository.save(FriendRequestJpa.create(sender, receiver));
     }
 
     public void acceptFriendRequest(Long id, String token, Long requestId) {
