@@ -69,6 +69,13 @@ public class AuthorizationService {
         accountRepository.save(accountJpa);
     }
 
+    public AccountJpa findValidAccount(Long accountId, String token) {
+        validateSession(accountId, token);
+
+        return accountRepository.findById(accountId)
+                .orElseThrow(()->new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(accountId)));
+    }
+
     // Utility functions--written by William P
     public void validateSession(Long accountId, String token) {
         if (!sessionRepository.sessionExists(accountId, token)) {

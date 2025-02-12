@@ -14,4 +14,6 @@ public interface ServerRepository extends JpaRepository<ServerJpa, Long> {
     ServerJpa findByOwnerIdAndId(Long ownerId, Long serverId);
 
     List<ServerJpa> findAllByMembersIsContaining(AccountJpa accountJpa);
+
+    //void deleteById(Long serverId);
 }

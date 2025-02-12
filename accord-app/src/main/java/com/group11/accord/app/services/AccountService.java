@@ -13,13 +13,17 @@ import com.group11.accord.jpa.user.AccountRepository;
 import com.group11.accord.jpa.user.friend.*;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class AccountService {
-    private final ServerMemberRepository serverMemberRepository;
+    private ServerMemberRepository serverMemberRepository;
     private AccountRepository accountRepository;
     private AuthorizationService authorizationService;
     private FriendRequestRepository friendRequestRepository;
@@ -150,4 +154,10 @@ public class AccountService {
 
         serverMemberRepository.save(ServerMemberJpa.create(accountJpa, inviteJpa.getServer()));
     }
+
+    public AccountJpa findAccountWithId(Long accountId) {
+        return accountRepository.findById(accountId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(accountId)));
+    }
+
 }

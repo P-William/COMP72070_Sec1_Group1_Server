@@ -12,6 +12,10 @@ import java.util.List;
 public interface ServerMemberRepository extends JpaRepository<ServerMemberJpa, Long> {
 
     boolean existsByIdAccount(AccountJpa accountJpa);
+    boolean existsByIdAccountIdAndIdServerId(Long accountId, Long serverId);
+
 
     List<ServerMemberJpa> findAllByIdServer(ServerJpa serverJpa);
+
+    void deleteByIdAccountIdAndIdServerId(Long accountId, Long serverId);
 }

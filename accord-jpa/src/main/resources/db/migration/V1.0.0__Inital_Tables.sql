@@ -67,6 +67,22 @@ create table server_ban (
         references account (id)
 );
 
+create sequence server_kick_id_seq start 1 increment 1;
+create table server_kick (
+    id bigint primary key,
+    server_id bigint not null,
+    kicked_user_id bigint not null,
+    kicked_by_id bigint not null,
+    reason text not null,
+    kicked_at timestamp not null,
+    foreign key (server_id)
+        references server (id),
+    foreign key (kicked_user_id)
+        references account (id),
+    foreign key (kicked_by_id)
+        references account (id)
+);
+
 create sequence channel_id_seq start 1 increment 1;
 create table channel (
     id bigint primary key,
