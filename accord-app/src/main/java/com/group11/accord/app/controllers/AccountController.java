@@ -55,7 +55,7 @@ public class AccountController {
         return accountService.getFriends(accountId, token);
     }
 
-    @GetMapping("/friend/requests/{accountId}")
+    @GetMapping("/friend/request/{accountId}")
     @Operation(summary = "Get a list of all friend requests")
     List<FriendRequest> getFriendRequests(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,

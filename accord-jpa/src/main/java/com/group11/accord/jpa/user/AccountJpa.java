@@ -50,7 +50,7 @@ public class AccountJpa implements Serializable {
     private String bio;
 
     @Column
-    private String profilePictureId;
+    private String profilePicUrl;
 
     @Setter(AccessLevel.NONE)
     @Builder.Default
@@ -82,6 +82,6 @@ public class AccountJpa implements Serializable {
     }
 
     public Account toDto(){
-        return new Account(id, username, bio, profilePictureId);
+        return new Account(id, username, bio, profilePicUrl);
     }
 }

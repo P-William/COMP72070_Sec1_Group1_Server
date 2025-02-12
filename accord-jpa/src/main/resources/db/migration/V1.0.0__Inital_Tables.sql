@@ -64,7 +64,7 @@ create table channel (
     is_private boolean not null,
     created_at timestamp not null,
     foreign key (server_id)
-                     references server (id)
+        references server (id)
 );
 
 create table server_channel (
