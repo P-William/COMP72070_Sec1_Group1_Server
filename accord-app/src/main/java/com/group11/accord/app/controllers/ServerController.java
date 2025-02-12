@@ -1,7 +1,6 @@
 package com.group11.accord.app.controllers;
 
 import com.group11.accord.api.server.BasicServer;
-import com.group11.accord.api.server.Server;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
 import com.group11.accord.app.services.ServerService;
@@ -57,7 +56,7 @@ public class ServerController {
 
     //Update
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PatchMapping("/name/{serverId}")
+    @PatchMapping("/{serverId}/name")
     @Operation(summary = "Change the name of a server")
     void changeServerName(
             @PathVariable @NotNull(message = "Server ID is required") Long serverId,
@@ -80,7 +79,7 @@ public class ServerController {
     }
 
     //Owner Operations dealing with members of a server
-    @PostMapping("/kick/{serverId}")
+    @PostMapping("/{serverId}/kick")
     @Operation(summary = "Kick a user from a server")
     void kickFromServer(
             @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
@@ -91,7 +90,7 @@ public class ServerController {
         serverService.kickFromServer(serverId, accountId, token, kickUpload);
     }
 
-    @PostMapping("/ban/{serverId}")
+    @PostMapping("/{serverId}/ban")
     @Operation(summary = "Ban a user from a server")
     void banFromServer(
             @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
@@ -102,11 +101,11 @@ public class ServerController {
         serverService.banFromServer(serverId, accountId, token, banUpload);
     }
 
-    @PostMapping("/{serverId}/{accountId}")
+    @PostMapping("/{serverId}")
     @Operation(summary = "Leave a server")
     void leaveServer(
             @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
-            @PathVariable @NotNull(message = "Account ID is required") Long accountId,
+            @RequestParam @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
         serverService.leaveServer(serverId, accountId, token);

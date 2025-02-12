@@ -65,23 +65,23 @@ public class AccountController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PostMapping("/friend/request/{accountId}")
+    @PostMapping("/friend/request")
     @Operation(summary = "Send a friend request to a specific user via their username")
     void sendFriendRequest(
-            @PathVariable @NotNull(message = "Account ID is required") Long accountId,
-            @RequestParam @NotNull(message = "Token is required") String token,
-            @RequestParam @NotNull(message = "A valid username to send a friend request to is required") String username
+            @RequestParam @NotNull(message = "A valid username to send a friend request to is required") String username,
+            @RequestParam @NotNull(message = "Account ID is required") Long accountId,
+            @RequestParam @NotNull(message = "Token is required") String token
     ) {
         accountService.sendFriendRequest(accountId, token, username);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PatchMapping("/friend/request/{accountId}")
+    @PatchMapping("/friend/request/{requestId}")
     @Operation(summary = "Accept a friend request")
     void acceptFriendRequest(
-            @PathVariable @NotNull(message = "Account ID is required") Long accountId,
-            @RequestParam @NotNull(message = "Token is required") String token,
-            @RequestParam @NotNull(message = "The id of the FriendRequest is required") Long requestId
+            @PathVariable @NotNull(message = "The id of the FriendRequest is required") Long requestId,
+            @RequestParam @NotNull(message = "Account ID is required") Long accountId,
+            @RequestParam @NotNull(message = "Token is required") String token
     ){
         accountService.acceptFriendRequest(accountId, token, requestId);
     }
@@ -96,10 +96,10 @@ public class AccountController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PatchMapping("/server/invite/{accountId}/{inviteId}")
+    @PatchMapping("/server/invite/{inviteId}")
     void acceptServerInvite(
-            @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @PathVariable @NotNull(message = "The ID of the ServerInvite is required") Long inviteId,
+            @RequestParam @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
         accountService.acceptServerInvite(accountId, inviteId, token);

@@ -11,7 +11,6 @@ spring:
     driver-class-name: org.postgresql.Driver
   flyway:
     enabled: true
-    baseline-on-migrate: true
   jpa:
     database: postgresql
     hibernate:

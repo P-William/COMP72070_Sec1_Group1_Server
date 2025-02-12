@@ -35,6 +35,6 @@ public class ServerInviteJpa implements Serializable {
     private ServerJpa server;
 
     @NonNull
-    @Column(name = "sent_at")
+    @Column
     private LocalDateTime sentAt;
 }

@@ -9,6 +9,11 @@ import lombok.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+enum MessageType {
+    TEXT,
+    IMAGE
+}
+
 @Getter
 @Setter
 @Entity

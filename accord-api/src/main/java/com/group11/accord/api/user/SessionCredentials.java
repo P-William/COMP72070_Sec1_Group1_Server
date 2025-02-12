@@ -3,8 +3,6 @@ package com.group11.accord.api.user;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.NonNull;
 
-import java.lang.annotation.Native;
-
 public record SessionCredentials (
 
         @NonNull

@@ -2,11 +2,11 @@ package com.group11.accord.app.controllers;
 
 import com.group11.accord.api.errors.ProblemDetailFactory;
 import com.group11.accord.app.exceptions.InvalidCredentialsException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 //IMPORTANT This code was entirely written by William regardless of who committed

@@ -16,7 +16,8 @@ create table friend(
     foreign key (account_id)
         references account (id),
     foreign key (friend_id)
-        references account (id)
+        references account (id),
+    primary key (account_id, friend_id)
 );
 
 create sequence session_id_seq start 1 increment 1;

@@ -8,14 +8,11 @@ import com.group11.accord.jpa.user.AccountJpa;
 import com.group11.accord.jpa.user.AccountRepository;
 import com.group11.accord.jpa.user.FriendRequestJpa;
 import com.group11.accord.jpa.user.FriendRequestRepository;
-import com.group11.accord.jpa.user.session.SessionRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -24,11 +21,11 @@ public class AccountService {
     private FriendRequestRepository friendRequestRepository;
 
     public void updateUsername(Long id, String token, String username) {
+        authorizationService.validateSession(id, token);
+
         AccountJpa accountJpa = accountRepository.findByUsername(username)
                 //If there is no account without the given username we respond with an error
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_USERNAME.formatted(username)));
-
-        authorizationService.validateSession(id, token);
 
         if (accountRepository.existsByUsername(username)){
             throw new EntityExistsException("An account with that username already exists");
@@ -39,33 +36,31 @@ public class AccountService {
     }
 
     public Account getAccount(Long id, String token) {
+        authorizationService.validateSession(id, token);
+
         AccountJpa accountJpa = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(id)));
-
-        authorizationService.validateSession(id, token);
 
         return accountJpa.toDto();
     }
 
     public List<Account> getFriends(Long id, String token) {
+        authorizationService.validateSession(id, token);
+
         AccountJpa accountJpa = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(id)));
 
-        authorizationService.validateSession(id, token);
-
-        List<Account> friends = new ArrayList<>();
-        for (AccountJpa friend : accountJpa.getFriends()){
-            friends.add(friend.toDto());
-        }
-
-        return friends;
+        return accountJpa.getFriends()
+                .stream()
+                .map(AccountJpa::toDto)
+                .toList();
     }
 
     public List<FriendRequest> getFriendRequests(Long id, String token) {
+        authorizationService.validateSession(id, token);
+
         AccountJpa accountJpa = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(id)));
-
-        authorizationService.validateSession(id, token);
 
         return friendRequestRepository
                 .findAllByReceiver(accountJpa)
@@ -75,17 +70,17 @@ public class AccountService {
     }
 
     public void sendFriendRequest(Long id, String token, String username) {
+        authorizationService.validateSession(id, token);
+
         AccountJpa sender = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(id)));
-
-        authorizationService.validateSession(id, token);
 
         //Find receiver
         AccountJpa receiver = accountRepository.findByUsername(username)
                         .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_USERNAME.formatted(username)));
 
         //In case client side accidentally sends a friend request to an existing user
-        if (!accountRepository.existsByFriendOf(receiver)){
+        if (!accountRepository.existsByFriends(receiver)){
             throw new EntityExistsException(ErrorMessages.ALREADY_FRIENDS.formatted(receiver.getUsername()));
         }
 

@@ -40,16 +40,6 @@ public class ChannelController {
         return channelService.createServerChannel(serverId, channelName, accountId, token);
     }
 
-    @PostMapping("/dm/{accountId}")
-    @Operation(summary = "Create a new dm between users")
-    Channel createDmChannel(
-            @PathVariable @NotNull(message = "Account ID is required") Long accountId,
-            @RequestParam @NotNull(message = "Token is required") String token,
-            @RequestParam @NotNull(message = "The ID of the user to create a dm with") Long friendID
-    ) {
-        return channelService.createDmChannel(friendID, accountId, token);
-    }
-
     //R
     @GetMapping("/{accountId}")
     @Operation(summary= "Retrieve all dm channels belonging to a user")
@@ -104,7 +94,7 @@ public class ChannelController {
     }
 
     //Operations dealing with messages
-    @PostMapping("/text/{channelId}")
+    @PostMapping("/{channelId}/text")
     @Operation(summary = "Send a text based message to a channel")
     void sendTextMessage(
             @PathVariable @NotNull(message = "The ID of the channel is required") Long channelId,
@@ -115,7 +105,7 @@ public class ChannelController {
         channelService.sendTextMessage(channelId, newMessage, accountId, token);
     }
 
-    @PostMapping("/image/{channelId}")
+    @PostMapping("/{channelId}/image")
     @Operation(summary = "Send a image in a message to a channel")
     void sendImageMessage(
             @PathVariable @NotNull(message = "The ID of the channel is required") Long channelId,

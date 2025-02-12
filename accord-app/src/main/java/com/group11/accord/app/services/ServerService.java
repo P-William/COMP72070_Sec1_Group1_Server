@@ -1,7 +1,6 @@
 package com.group11.accord.app.services;
 
 import com.group11.accord.api.server.BasicServer;
-import com.group11.accord.api.server.Server;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
 import org.springframework.stereotype.Service;

@@ -60,10 +60,6 @@ public class ServerJpa implements Serializable {
     }
 
     public Server toDto(){
-        List<Channel> channelDtos = new ArrayList<>();
-        for (ChannelJpa channel : channels){
-            channelDtos.add(channel.toDto());
-        }
-        return new Server(id, name, owner.toDto(), createdAt, channelDtos);
+        return new Server(id, name, owner.toDto(), createdAt, channels.stream().map(ChannelJpa::toDto).toList());
     }
 }
