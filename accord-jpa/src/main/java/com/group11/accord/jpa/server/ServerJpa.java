@@ -1,6 +1,7 @@
 package com.group11.accord.jpa.server;
 
 import com.group11.accord.api.channel.Channel;
+import com.group11.accord.api.server.BasicServer;
 import com.group11.accord.api.server.Server;
 import com.group11.accord.jpa.channel.ChannelJpa;
 import com.group11.accord.jpa.user.AccountJpa;
@@ -47,6 +48,16 @@ public class ServerJpa implements Serializable {
     )
     private List<ChannelJpa> channels = new ArrayList<>();
 
+    @Setter(AccessLevel.NONE)
+    @Builder.Default
+    @ManyToMany
+    @JoinTable(
+            name = "server_member",
+            joinColumns = @JoinColumn(name = "server_id"),
+            inverseJoinColumns = @JoinColumn(name = "account_id")
+    )
+    private List<AccountJpa> members = new ArrayList<>();
+
     @NonNull
     @Column
     private LocalDateTime createdAt;
@@ -60,6 +71,12 @@ public class ServerJpa implements Serializable {
     }
 
     public Server toDto(){
-        return new Server(id, name, owner.toDto(), createdAt, channels.stream().map(ChannelJpa::toDto).toList());
+        return new Server(id, name, owner.toDto(), createdAt,
+                channels.stream().map(ChannelJpa::toDto).toList(),
+                members.stream().map(AccountJpa::toDto).toList());
+    }
+
+    public BasicServer toBasicDto() {
+        return new BasicServer(id, name, owner.toDto());
     }
 }

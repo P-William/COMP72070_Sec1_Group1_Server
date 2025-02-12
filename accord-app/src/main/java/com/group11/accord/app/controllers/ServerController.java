@@ -78,6 +78,16 @@ public class ServerController {
         serverService.deleteServer(serverId, accountId, token);
     }
 
+    @PostMapping("/{serverId}/invite")
+    @Operation(summary = "Invite a user to a server")
+    void inviteToServer(
+            @PathVariable @NotNull(message = "ID of the server to invite someone to") Long serverId,
+            @RequestParam @NotNull(message = "Account ID of a server member is required") Long accountId,
+            @RequestParam @NotNull(message = "Token is required") String token
+    ) {
+
+    }
+
     //Owner Operations dealing with members of a server
     @PostMapping("/{serverId}/kick")
     @Operation(summary = "Kick a user from a server")

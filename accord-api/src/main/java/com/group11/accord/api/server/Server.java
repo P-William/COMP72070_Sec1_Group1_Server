@@ -32,5 +32,9 @@ public record Server(
 
     @NonNull
     @Schema(description = "The channels in the server")
-    List<Channel> channels
+    List<Channel> channels,
+
+    @NonNull
+    @Schema(description = "The members of a server")
+    List<Account> members
 ) { }

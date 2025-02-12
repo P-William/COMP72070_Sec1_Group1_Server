@@ -11,13 +11,13 @@ create table account(
 );
 
 create table friend(
-    account_id bigint not null,
+    sender_id bigint not null,
     friend_id bigint not null,
-    foreign key (account_id)
+    foreign key (sender_id)
         references account (id),
     foreign key (friend_id)
         references account (id),
-    primary key (account_id, friend_id)
+    primary key (sender_id, friend_id)
 );
 
 create sequence session_id_seq start 1 increment 1;
@@ -38,6 +38,17 @@ create table server (
     created_at timestamp not null,
     foreign key (owner_id)
         references account (id)
+);
+
+create table server_member (
+    account_id bigint not null,
+    server_id bigint not null,
+    joined_at timestamp not null,
+    foreign key (account_id)
+        references account (id),
+    foreign key (server_id)
+        references server(id),
+    primary key (account_id, server_id)
 );
 
 create sequence server_ban_id_seq start 1 increment 1;

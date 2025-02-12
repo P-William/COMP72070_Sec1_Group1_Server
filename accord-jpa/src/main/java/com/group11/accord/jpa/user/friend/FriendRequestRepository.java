@@ -1,5 +1,6 @@
-package com.group11.accord.jpa.user;
+package com.group11.accord.jpa.user.friend;
 
+import com.group11.accord.jpa.user.AccountJpa;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
