@@ -4,18 +4,22 @@ import com.group11.accord.api.channel.Channel;
 import com.group11.accord.api.message.Message;
 import com.group11.accord.api.message.NewImageMessage;
 import com.group11.accord.api.message.NewTextMessage;
+import com.group11.accord.jpa.server.ServerJpa;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ChannelService {
+    private AuthorizationService authorizationService;
+    private ServerService serverService;
 
     public Channel createServerChannel(Long serverId, String channelName, Long accountId, String token) {
-        return null;
-    }
+        authorizationService.validateSession(accountId, token);
 
-    public Channel createDmChannel(Long friendId, Long accountId, String token) {
+        ServerJpa server = serverService.findServerWithId(serverId);
+
+
         return null;
     }
 

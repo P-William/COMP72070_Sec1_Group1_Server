@@ -70,11 +70,11 @@ public class ServerJpa implements Serializable {
                 .build();
     }
 
-    public Server toDto(){
-        return new Server(id, name, owner.toDto(), createdAt,
-                channels.stream().map(ChannelJpa::toDto).toList(),
-                members.stream().map(AccountJpa::toDto).toList());
-    }
+//    public Server toDto(){
+//        return new Server(id, name, owner.toDto(), createdAt,
+//                channels.stream().map(ChannelJpa::toDto).toList(),
+//                members.stream().map(AccountJpa::toDto).toList());
+//    }
 
     public BasicServer toBasicDto() {
         return new BasicServer(id, name, owner.toDto());

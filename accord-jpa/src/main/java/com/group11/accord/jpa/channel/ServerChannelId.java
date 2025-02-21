@@ -1,7 +1,6 @@
-package com.group11.accord.jpa.server.member;
+package com.group11.accord.jpa.channel;
 
 import com.group11.accord.jpa.server.ServerJpa;
-import com.group11.accord.jpa.user.AccountJpa;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -15,14 +14,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberId {
-
-    @ManyToOne
-    @JoinColumn(name = "account_id")
-    private AccountJpa account;
+public class ServerChannelId {
 
     @ManyToOne
     @JoinColumn(name = "server_id")
     private ServerJpa server;
+
+    @ManyToOne
+    @JoinColumn(name = "channel_id")
+    private ChannelJpa channel;
 
 }

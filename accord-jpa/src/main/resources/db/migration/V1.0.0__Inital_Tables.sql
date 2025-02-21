@@ -7,7 +7,7 @@ create table account(
     created_at timestamp not null,
     deleted boolean not null,
     bio text,
-    profile_url text
+    profile_pic_url text
 );
 
 create table friend(

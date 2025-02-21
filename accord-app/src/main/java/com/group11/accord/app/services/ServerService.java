@@ -3,6 +3,7 @@ package com.group11.accord.app.services;
 import com.group11.accord.api.server.BasicServer;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
+import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
 import com.group11.accord.app.exceptions.ErrorMessages;
 import com.group11.accord.app.exceptions.InvalidCredentialsException;
 import com.group11.accord.jpa.server.ServerJpa;
@@ -27,12 +28,6 @@ public class ServerService {
     private ServerBanRepository serverBanRepository;
     private AuthorizationService authorizationService;
     private ServerRepository serverRepository;
-
-    public ServerService(ServerKickRepository serverKickRepository, AccountService accountService, ServerMemberRepository serverMemberRepository) {
-        this.serverKickRepository = serverKickRepository;
-        this.accountService = accountService;
-        this.serverMemberRepository = serverMemberRepository;
-    }
 
     public void createServer(Long accountId, String token, String serverName) {
         AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
@@ -68,7 +63,7 @@ public class ServerService {
     public void kickFromServer(Long serverId, Long accountId, String token, NewServerKick kickUpload) {
         ServerJpa server = validateOwner(serverId, accountId, token);
 
-        //TODO add check for user is actually a member of the server
+        verifyIsServerMember(kickUpload.kickedUser().id(), serverId);
 
         AccountJpa kickedUser = accountService.findAccountWithId(kickUpload.kickedUser().id());
 
@@ -82,7 +77,7 @@ public class ServerService {
     public void banFromServer(Long serverId, Long accountId, String token, NewServerBan banUpload) {
         ServerJpa server = validateOwner(serverId, accountId, token);
 
-        //TODO add check for user is actually a member of the server
+        verifyIsServerMember(banUpload.bannedUser().id(), serverId);
 
         AccountJpa bannedUser = accountService.findAccountWithId(banUpload.bannedUser().id());
 
@@ -97,9 +92,7 @@ public class ServerService {
     public void leaveServer(Long serverId, Long accountId, String token) {
         authorizationService.validateSession(accountId, token);
 
-        if (!serverMemberRepository.existsByIdAccountIdAndIdServerId(accountId, serverId)) {
-            throw new EntityNotFoundException(ErrorMessages.NOT_MEMBER.formatted(serverId));
-        }
+        verifyIsServerMember(accountId, serverId);
 
         serverMemberRepository.deleteByIdAccountIdAndIdServerId(accountId, serverId);
     }
@@ -108,7 +101,7 @@ public class ServerService {
         authorizationService.validateSession(accountId, token);
 
         if (!serverRepository.existsByOwnerIdAndId(accountId, serverId)){
-            throw new InvalidCredentialsException(ErrorMessages.INVALID_SERVER_AUTHORITY.formatted(accountId));
+            throw new AccountNotAuthorizedException(ErrorMessages.INVALID_SERVER_AUTHORITY.formatted(accountId));
         }
 
         return serverRepository.findByOwnerIdAndId(accountId, serverId);
@@ -117,5 +110,11 @@ public class ServerService {
     public ServerJpa findServerWithId(Long serverId) {
         return serverRepository.findById(serverId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_SERVER_WITH_ID.formatted(serverId)));
+    }
+
+    public void verifyIsServerMember(Long accountId, Long serverId){
+        if (!serverMemberRepository.existsByIdAccountIdAndIdServerId(accountId, serverId)) {
+            throw new EntityNotFoundException(ErrorMessages.NOT_MEMBER.formatted(serverId));
+        }
     }
 }

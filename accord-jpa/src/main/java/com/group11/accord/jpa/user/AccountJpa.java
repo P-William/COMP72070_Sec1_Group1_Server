@@ -67,7 +67,7 @@ public class AccountJpa implements Serializable {
     @ManyToMany
     @JoinTable(
             name = "friend",
-            joinColumns = @JoinColumn(name = "account_id"),
+            joinColumns = @JoinColumn(name = "sender_id"),
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
     private List<AccountJpa> friends = new ArrayList<>();

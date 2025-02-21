@@ -43,7 +43,7 @@ public class MessageJpa implements Serializable {
     private LocalDateTime sentAt;
 
     @NonNull
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "channel_id")
     private ChannelJpa channel;
 
@@ -52,9 +52,9 @@ public class MessageJpa implements Serializable {
     @Column(name = "content_type")
     private MessageType type;
 
-    public Message toDto() {
+    /*public Message toDto() {
         boolean isImage = type.equals(MessageType.IMAGE);
 
         return new Message(id, author.toDto(), channel.toDto(), content, isImage, sentAt);
-    }
+    }*/
 }

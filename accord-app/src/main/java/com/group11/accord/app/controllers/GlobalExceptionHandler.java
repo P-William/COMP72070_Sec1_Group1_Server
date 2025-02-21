@@ -1,6 +1,7 @@
 package com.group11.accord.app.controllers;
 
 import com.group11.accord.api.errors.ProblemDetailFactory;
+import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
 import com.group11.accord.app.exceptions.InvalidCredentialsException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,5 +29,11 @@ public class GlobalExceptionHandler {
     public ProblemDetail invalidCredentialsException(InvalidCredentialsException e) {
         // We could throw a 403 Forbidden here, but 401 Unauthorized hides the existence of the resource
         return ProblemDetailFactory.createProblemDetail(HttpStatus.UNAUTHORIZED, e);
+    }
+
+    //For when an account attempts to make a request with a resource they are not authorized to make
+    @ExceptionHandler(AccountNotAuthorizedException.class)
+    public ProblemDetail accountNotAuthorizedException(AccountNotAuthorizedException e) {
+        return ProblemDetailFactory.createProblemDetail(HttpStatus.FORBIDDEN, e);
     }
 }
