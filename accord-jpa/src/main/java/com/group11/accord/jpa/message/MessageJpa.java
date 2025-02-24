@@ -52,9 +52,9 @@ public class MessageJpa implements Serializable {
     @Column(name = "content_type")
     private MessageType type;
 
-    /*public Message toDto() {
+    public Message toDto() {
         boolean isImage = type.equals(MessageType.IMAGE);
 
-        return new Message(id, author.toDto(), channel.toDto(), content, isImage, sentAt);
-    }*/
+        return new Message(id, author.toDto(), channel.getId(), content, isImage, sentAt);
+    }
 }

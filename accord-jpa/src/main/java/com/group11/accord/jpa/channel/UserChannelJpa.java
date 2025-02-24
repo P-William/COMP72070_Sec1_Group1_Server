@@ -2,7 +2,7 @@ package com.group11.accord.jpa.channel;
 
 import com.group11.accord.api.channel.Channel;
 import com.group11.accord.jpa.message.MessageJpa;
-import com.group11.accord.jpa.server.ServerJpa;
+import com.group11.accord.jpa.user.AccountJpa;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -12,17 +12,17 @@ import lombok.*;
 @Setter
 @Entity
 @Builder
-@Table(name = "server_channel")
+@Table(name = "user_channel")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class ServerChannelJpa {
+public class UserChannelJpa {
 
     @EmbeddedId
-    private ServerChannelId id;
+    private UserChannelId id;
 
-    public static ServerChannelJpa create(ServerJpa server, String channelName) {
-        return ServerChannelJpa.builder()
-                .id(new ServerChannelId(server, ChannelJpa.create(channelName)))
+    public static UserChannelJpa create(AccountJpa accountOne, AccountJpa accountTwo, String channelName) {
+        return UserChannelJpa.builder()
+                .id(new UserChannelId(accountOne, accountTwo, ChannelJpa.create(channelName)))
                 .build();
     }
 
@@ -31,7 +31,7 @@ public class ServerChannelJpa {
                 id.getChannel().getId(),
                 id.getChannel().getName(),
                 id.getChannel().getMessages().stream().map(MessageJpa::toDto).toList(),
-                false,
+                true,
                 id.getChannel().getCreatedAt()
         );
     }

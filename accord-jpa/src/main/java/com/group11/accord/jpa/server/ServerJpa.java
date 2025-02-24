@@ -1,8 +1,6 @@
 package com.group11.accord.jpa.server;
 
-import com.group11.accord.api.channel.Channel;
 import com.group11.accord.api.server.BasicServer;
-import com.group11.accord.api.server.Server;
 import com.group11.accord.jpa.channel.ChannelJpa;
 import com.group11.accord.jpa.user.AccountJpa;
 import jakarta.persistence.*;

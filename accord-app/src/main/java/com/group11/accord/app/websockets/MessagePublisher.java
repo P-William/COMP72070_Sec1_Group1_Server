@@ -12,19 +12,20 @@ public class MessagePublisher {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    public void publishMessage(Message message) {
-        String topic = MessageRouteBuilder.newMessage(message.id(), message.channel().id());
-        messagingTemplate.convertAndSend(topic, message);
-    }
-
-    public void publishMessageEdit(Message message) {
-        String topic = MessageRouteBuilder.editedMessage(message.id(), message.channel().id());
-        messagingTemplate.convertAndSend(topic, message);
-    }
-
-    public void publishMessageDelete(Message message) {
-        String topic = MessageRouteBuilder.deletedMessage(message.id(), message.channel().id());
-        messagingTemplate.convertAndSend(topic, message);
-    }
+    //TODO fix
+//    public void publishMessage(Message message) {
+//        String topic = MessageRouteBuilder.newMessage(message.id(), message.channel().id());
+//        messagingTemplate.convertAndSend(topic, message);
+//    }
+//
+//    public void publishMessageEdit(Message message) {
+//        String topic = MessageRouteBuilder.editedMessage(message.id(), message.channel().id());
+//        messagingTemplate.convertAndSend(topic, message);
+//    }
+//
+//    public void publishMessageDelete(Message message) {
+//        String topic = MessageRouteBuilder.deletedMessage(message.id(), message.channel().id());
+//        messagingTemplate.convertAndSend(topic, message);
+//    }
 
 }

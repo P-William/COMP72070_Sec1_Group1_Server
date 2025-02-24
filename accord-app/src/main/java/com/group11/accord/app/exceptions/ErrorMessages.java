@@ -13,4 +13,5 @@ public class ErrorMessages {
     public static final String NOT_MEMBER = "User is not a member of server with ID %s";
     public static final String INVALID_SERVER_AUTHORITY = "User %s is not authorized to make changes to this server";
     public static final String MISSING_SERVER_WITH_ID = "Unknown server with ID %s";
+    public static final String MISSING_CHANNEL_WITH_ID = "Unknown channel with ID %s";
 }

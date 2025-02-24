@@ -12,18 +12,19 @@ public class ChannelPublisher {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    public void publishChannel(Channel channel) {
-        String topic = ChannelRouteBuilder.createdChannel(channel.serverId());
-        messagingTemplate.convertAndSend(topic, channel);
-    }
-
-    public void publishChannelEdit(Channel channel) {
-        String topic = ChannelRouteBuilder.editedChannel(channel.serverId());
-        messagingTemplate.convertAndSend(topic, channel);
-    }
-
-    public void publishChannelDelete(Channel channel) {
-        String topic = ChannelRouteBuilder.deletedChannel(channel.serverId());
-        messagingTemplate.convertAndSend(topic, channel);
-    }
+    //TODO fix needed as Channel dto currently does not have the serverId
+//    public void publishChannel(Channel channel) {
+//        String topic = ChannelRouteBuilder.createdChannel(channel.serverId());
+//        messagingTemplate.convertAndSend(topic, channel);
+//    }
+//
+//    public void publishChannelEdit(Channel channel) {
+//        String topic = ChannelRouteBuilder.editedChannel(channel.serverId());
+//        messagingTemplate.convertAndSend(topic, channel);
+//    }
+//
+//    public void publishChannelDelete(Channel channel) {
+//        String topic = ChannelRouteBuilder.deletedChannel(channel.serverId());
+//        messagingTemplate.convertAndSend(topic, channel);
+//    }
 }
