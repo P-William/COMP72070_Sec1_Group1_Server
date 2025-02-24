@@ -30,4 +30,4 @@ logging:
       max-history: 10
       file-name-pattern: ${LOG_FILE}.%d{yyyy-MM}.%i.gz
 server:
-  port: 7001
+  port: 7003
