@@ -3,6 +3,7 @@ package com.group11.accord.app.controllers;
 import com.group11.accord.api.errors.ProblemDetailFactory;
 import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
 import com.group11.accord.app.exceptions.InvalidCredentialsException;
+import com.group11.accord.app.exceptions.ServerErrorException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -35,5 +36,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccountNotAuthorizedException.class)
     public ProblemDetail accountNotAuthorizedException(AccountNotAuthorizedException e) {
         return ProblemDetailFactory.createProblemDetail(HttpStatus.FORBIDDEN, e);
+    }
+
+    @ExceptionHandler(ServerErrorException.class)
+    public ProblemDetail serverErrorException(ServerErrorException e) {
+        return ProblemDetailFactory.createProblemDetail(HttpStatus.INTERNAL_SERVER_ERROR, e);
     }
 }

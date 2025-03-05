@@ -90,7 +90,7 @@ public class ChannelController {
         @RequestParam @NotNull(message = "Account ID is required") Long accountId,
         @RequestParam @NotNull(message = "Token is required") String token
     ) {
-        channelService.deleteChannel(channelId, accountId, token);
+        channelService.deleteServerChannel(channelId, accountId, token);
     }
 
     //Operations dealing with messages
