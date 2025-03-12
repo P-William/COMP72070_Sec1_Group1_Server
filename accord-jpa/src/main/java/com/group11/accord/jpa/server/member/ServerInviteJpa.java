@@ -1,5 +1,7 @@
-package com.group11.accord.jpa.server;
+package com.group11.accord.jpa.server.member;
 
+import com.group11.accord.api.server.members.ServerInvite;
+import com.group11.accord.jpa.server.ServerJpa;
 import com.group11.accord.jpa.user.AccountJpa;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,6 +37,19 @@ public class ServerInviteJpa implements Serializable {
     private ServerJpa server;
 
     @NonNull
-    @Column(name = "sent_at")
+    @Column
     private LocalDateTime sentAt;
+
+    public static ServerInviteJpa create(AccountJpa sender, AccountJpa receiver, ServerJpa server){
+        return ServerInviteJpa.builder()
+                .sender(sender)
+                .receiver(receiver)
+                .server(server)
+                .sentAt(LocalDateTime.now())
+                .build();
+    }
+
+    public ServerInvite toDto() {
+        return new ServerInvite(id, sender.toDto(), server.toBasicDto(), sentAt);
+    }
 }

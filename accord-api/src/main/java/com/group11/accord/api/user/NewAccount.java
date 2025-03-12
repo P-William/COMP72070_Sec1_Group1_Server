@@ -20,5 +20,6 @@ public record NewAccount(
         String password,
 
         @Schema(description = "The accounts bio")
+        @Size(max = 512, message = "User biography can only be a maximum of 512 characters")
         String bio
 ) { }

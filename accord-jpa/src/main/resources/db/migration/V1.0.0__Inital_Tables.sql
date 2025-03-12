@@ -7,16 +7,17 @@ create table account(
     created_at timestamp not null,
     deleted boolean not null,
     bio text,
-    profile_url text
+    profile_pic_url text
 );
 
 create table friend(
-    account_id bigint not null,
+    sender_id bigint not null,
     friend_id bigint not null,
-    foreign key (account_id)
+    foreign key (sender_id)
         references account (id),
     foreign key (friend_id)
-        references account (id)
+        references account (id),
+    primary key (sender_id, friend_id)
 );
 
 create sequence session_id_seq start 1 increment 1;
@@ -39,6 +40,17 @@ create table server (
         references account (id)
 );
 
+create table server_member (
+    account_id bigint not null,
+    server_id bigint not null,
+    joined_at timestamp not null,
+    foreign key (account_id)
+        references account (id),
+    foreign key (server_id)
+        references server(id),
+    primary key (account_id, server_id)
+);
+
 create sequence server_ban_id_seq start 1 increment 1;
 create table server_ban (
     id bigint primary key,
@@ -55,6 +67,22 @@ create table server_ban (
         references account (id)
 );
 
+create sequence server_kick_id_seq start 1 increment 1;
+create table server_kick (
+    id bigint primary key,
+    server_id bigint not null,
+    kicked_user_id bigint not null,
+    kicked_by_id bigint not null,
+    reason text not null,
+    kicked_at timestamp not null,
+    foreign key (server_id)
+        references server (id),
+    foreign key (kicked_user_id)
+        references account (id),
+    foreign key (kicked_by_id)
+        references account (id)
+);
+
 create sequence channel_id_seq start 1 increment 1;
 create table channel (
     id bigint primary key,
@@ -63,7 +91,7 @@ create table channel (
     is_private boolean not null,
     created_at timestamp not null,
     foreign key (server_id)
-                     references server (id)
+        references server (id)
 );
 
 create table server_channel (

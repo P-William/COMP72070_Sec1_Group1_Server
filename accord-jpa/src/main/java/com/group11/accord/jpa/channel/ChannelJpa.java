@@ -1,12 +1,13 @@
 package com.group11.accord.jpa.channel;
 
 import com.group11.accord.api.channel.Channel;
-import com.group11.accord.jpa.server.ServerJpa;
+import com.group11.accord.jpa.message.MessageJpa;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,13 +35,16 @@ public class ChannelJpa implements Serializable {
 
     @NonNull
     @Column
-    Boolean isPrivate;
-
-    @NonNull
-    @Column
     LocalDateTime createdAt;
 
-    public Channel toDto(){
-        return new Channel(id, server.getId(), name, isPrivate, createdAt);
+    @OneToMany(mappedBy = "channel")
+    private List<MessageJpa> messages;
+
+    public static ChannelJpa create(String name) {
+        return ChannelJpa.builder()
+                .name(name)
+                .build();
     }
+
+
 }
