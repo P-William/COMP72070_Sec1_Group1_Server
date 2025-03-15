@@ -48,10 +48,10 @@ public class SecurityConfig {
             String cfHeader = context.getRequest().getHeader("CF-Connecting-IP");
             String remoteAddr = context.getRequest().getRemoteAddr();
 
-            log.info("Request URL: {}", requestUrl);
-            log.info("Request URI: {}", requestUri);
-            log.info("CF Header: {}", cfHeader);
-            log.info("Remote Addr: {}", remoteAddr);
+//            log.info("Request URL: {}", requestUrl);
+//            log.info("Request URI: {}", requestUri);
+//            log.info("CF Header: {}", cfHeader);
+//            log.info("Remote Addr: {}", remoteAddr);
 
             boolean isLocalRequest = cfHeader == null &&
                 (remoteAddr.startsWith("192.168.") || remoteAddr.startsWith("127.0.") || remoteAddr.startsWith("localhost"));
