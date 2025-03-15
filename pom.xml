@@ -12,7 +12,7 @@
 
 	<groupId>com.group11</groupId>
 	<artifactId>accord</artifactId>
-	<version>0.0.1</version>
+	<version>1.0.0</version>
 	<name>Accord</name>
 	<description>Accord</description>
 	<packaging>pom</packaging>

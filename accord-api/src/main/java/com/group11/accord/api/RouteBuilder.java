@@ -2,8 +2,10 @@ package com.group11.accord.api;
 
 import com.group11.accord.api.server.ServerDeletion;
 import com.group11.accord.api.server.ServerEdit;
-import com.group11.accord.api.server.members.*;
-import com.group11.accord.api.user.Account;
+import com.group11.accord.api.server.members.ServerBan;
+import com.group11.accord.api.server.members.ServerKick;
+import com.group11.accord.api.server.members.UserAdded;
+import com.group11.accord.api.server.members.UserLeft;
 import com.group11.accord.api.user.friend.FriendRequest;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
