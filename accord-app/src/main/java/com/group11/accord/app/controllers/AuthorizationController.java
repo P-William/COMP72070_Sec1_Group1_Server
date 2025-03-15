@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Authorization Controller", description = "Handles all operations regarding Authorization")
 @RequiredArgsConstructor
 public class AuthorizationController {
-    AuthorizationService authorizationService;
+    private final AuthorizationService authorizationService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")

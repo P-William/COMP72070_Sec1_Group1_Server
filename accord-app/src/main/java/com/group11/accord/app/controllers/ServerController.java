@@ -26,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ServerController {
 
-    ServerService serverService;
+    private final ServerService serverService;
 
     //CRUD
 

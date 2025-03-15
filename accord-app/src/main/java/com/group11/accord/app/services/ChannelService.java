@@ -14,20 +14,22 @@ import com.group11.accord.jpa.user.AccountJpa;
 import com.group11.accord.jpa.user.friend.FriendId;
 import com.group11.accord.jpa.user.friend.FriendRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class ChannelService {
-    private FriendRepository friendRepository;
-    private AuthorizationService authorizationService;
-    private ServerService serverService;
+    private final FriendRepository friendRepository;
+    private final AuthorizationService authorizationService;
+    private final ServerService serverService;
 
-    private ChannelRepository channelRepository;
-    private ServerChannelRepository serverChannelRepository;
-    private UserChannelRepository userChannelRepository;
+    private final ChannelRepository channelRepository;
+    private final ServerChannelRepository serverChannelRepository;
+    private final UserChannelRepository userChannelRepository;
 
     public Channel createServerChannel(Long serverId, String channelName, Long accountId, String token) {
         authorizationService.validateSession(accountId, token);

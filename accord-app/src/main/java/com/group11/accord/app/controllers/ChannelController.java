@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChannelController {
 
-    ChannelService channelService;
+    private final ChannelService channelService;
 
     //CRUD
 
