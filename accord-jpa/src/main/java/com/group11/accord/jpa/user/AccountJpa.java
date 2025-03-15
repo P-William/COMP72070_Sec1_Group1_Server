@@ -42,9 +42,10 @@ public class AccountJpa implements Serializable {
     @Column
     private LocalDateTime createdAt;
 
+    @Builder.Default
     @NonNull
     @Column
-    private Boolean deleted;
+    private Boolean deleted = false;
 
     @Column
     private String bio;
