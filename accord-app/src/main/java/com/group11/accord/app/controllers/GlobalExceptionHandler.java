@@ -1,20 +1,25 @@
 package com.group11.accord.app.controllers;
 
 import com.group11.accord.api.errors.ProblemDetailFactory;
+import com.group11.accord.api.errors.ValidationDetail;
+import com.group11.accord.api.errors.ValidationProcessor;
 import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
 import com.group11.accord.app.exceptions.InvalidCredentialsException;
 import com.group11.accord.app.exceptions.ServerErrorException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.*;
+import org.springframework.lang.NonNull;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-//IMPORTANT This code was entirely written by William regardless of who committed
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ProblemDetail entityNotFoundException(EntityNotFoundException e) {
@@ -41,5 +46,29 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ServerErrorException.class)
     public ProblemDetail serverErrorException(ServerErrorException e) {
         return ProblemDetailFactory.createProblemDetail(HttpStatus.INTERNAL_SERVER_ERROR, e);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+        MethodArgumentNotValidException ex,
+        @NonNull HttpHeaders headers,
+        @NonNull HttpStatusCode status,
+        @NonNull WebRequest request
+    ) {
+        ValidationDetail body = ProblemDetailFactory.createValidationDetail(ex.updateAndGetBody(getMessageSource(), LocaleContextHolder.getLocale()));
+        ValidationProcessor.addErrorsToValidationDetail(ex.getGlobalErrors(), ex.getFieldErrors(), body);
+        return handleExceptionInternal(ex, body, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHandlerMethodValidationException(
+        HandlerMethodValidationException ex,
+        @NonNull HttpHeaders headers,
+        @NonNull HttpStatusCode status,
+        @NonNull WebRequest request
+    ) {
+        ValidationDetail body = ProblemDetailFactory.createValidationDetail(ex.updateAndGetBody(getMessageSource(), LocaleContextHolder.getLocale()));
+        ValidationProcessor.addValidationResultsToValidationDetail(ex.getAllValidationResults(), body);
+        return handleExceptionInternal(ex, body, headers, status, request);
     }
 }
