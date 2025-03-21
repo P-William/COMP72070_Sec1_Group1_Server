@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +42,8 @@ public class ChannelController {
     }
 
     //R
-    @GetMapping("/{accountId}")
+    @GetMapping("/dm/{accountId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary= "Retrieve all dm channels belonging to a user")
     List<Channel> getDmChannels(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
@@ -50,7 +52,7 @@ public class ChannelController {
         return channelService.getDmChannels(accountId, token);
     }
 
-    @GetMapping("/{serverId}")
+    @GetMapping("/server/{serverId}")
     @Operation(summary = "Retrieve all channels a user can see")
     List<Channel> getServerChannels(
             @PathVariable @NotNull(message = "Account ID is required") Long serverId,
@@ -84,6 +86,7 @@ public class ChannelController {
 
     //D
     @DeleteMapping("/{channelId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a channel")
     void deleteChannel(
         @PathVariable @NotNull(message = "The ID of the channel is required") Long channelId,
@@ -95,6 +98,7 @@ public class ChannelController {
 
     //Operations dealing with messages
     @PostMapping("/{channelId}/text")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Send a text based message to a channel")
     void sendTextMessage(
             @PathVariable @NotNull(message = "The ID of the channel is required") Long channelId,
@@ -106,6 +110,7 @@ public class ChannelController {
     }
 
     @PostMapping("/{channelId}/image")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Send a image in a message to a channel")
     void sendImageMessage(
             @PathVariable @NotNull(message = "The ID of the channel is required") Long channelId,

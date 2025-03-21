@@ -69,6 +69,7 @@ public class ServerController {
 
     //Delete
     @DeleteMapping("/{serverId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete a server")
     void deleteServer(
             @PathVariable @NotNull(message = "ID of the server to delete is required") Long serverId,
@@ -79,6 +80,7 @@ public class ServerController {
     }
 
     @PostMapping("/{serverId}/invite")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Invite a user to a server")
     void inviteToServer(
             @PathVariable @NotNull(message = "ID of the server to invite someone to") Long serverId,
@@ -90,6 +92,7 @@ public class ServerController {
 
     //Owner Operations dealing with members of a server
     @PostMapping("/{serverId}/kick")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Kick a user from a server")
     void kickFromServer(
             @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
@@ -101,6 +104,7 @@ public class ServerController {
     }
 
     @PostMapping("/{serverId}/ban")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Ban a user from a server")
     void banFromServer(
             @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
@@ -112,6 +116,7 @@ public class ServerController {
     }
 
     @PostMapping("/leave/{serverId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Leave a server")
     void leaveServer(
             @PathVariable @NotNull(message = "ID of the server is required") Long serverId,

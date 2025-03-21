@@ -30,5 +30,5 @@ public class FileJpa {
 
     @NonNull
     @Column
-    private Byte[] data;
+    private byte[] data;
 }

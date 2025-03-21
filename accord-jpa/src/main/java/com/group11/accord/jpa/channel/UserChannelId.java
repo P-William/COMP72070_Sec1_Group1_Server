@@ -9,6 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.Hibernate;
+
+import java.util.Objects;
 
 @Embeddable
 @Getter
@@ -29,4 +32,21 @@ public class UserChannelId {
     @JoinColumn(name = "channel_id")
     private ChannelJpa channel;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+
+        UserChannelId userChannelId = (UserChannelId) o;
+        return accountOne.equals(userChannelId.getAccountOne()) && accountTwo.equals(userChannelId.getAccountTwo()) && channel.equals(userChannelId.getChannel());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountOne, accountTwo, channel);
+    }
 }

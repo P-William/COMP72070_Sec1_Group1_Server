@@ -24,14 +24,14 @@ public class ChannelJpa implements Serializable {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-//    @NonNull
-//    @OneToOne
-//    @JoinColumn(name = "server_id")
-//    ServerJpa server;
+    @NonNull
+    @Column
+    private String name;
 
     @NonNull
     @Column
-    String name;
+    @Builder.Default
+    private Boolean isPrivate = false;
 
     @NonNull
     @Column
@@ -40,9 +40,10 @@ public class ChannelJpa implements Serializable {
     @OneToMany(mappedBy = "channel")
     private List<MessageJpa> messages;
 
-    public static ChannelJpa create(String name) {
+    public static ChannelJpa create(String name, Boolean isPrivate) {
         return ChannelJpa.builder()
             .name(name)
+                .isPrivate(isPrivate)
             .build();
     }
 

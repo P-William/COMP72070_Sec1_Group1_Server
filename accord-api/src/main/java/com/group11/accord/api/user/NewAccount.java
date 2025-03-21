@@ -16,7 +16,7 @@ public record NewAccount(
 
         @Schema(description = "The password for the new account")
         @NotBlank(message = "Password cannot be blank")
-        @Size(min = 8, max = 32, message = "Password must be between 6 and 32 characters long")
+        @Size(min = 6, max = 32, message = "Password must be between 6 and 32 characters long")
         String password,
 
         @Schema(description = "The accounts bio")

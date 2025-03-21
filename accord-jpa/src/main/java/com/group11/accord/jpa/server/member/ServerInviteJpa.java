@@ -24,14 +24,17 @@ public class ServerInviteJpa implements Serializable {
     @Setter(AccessLevel.NONE)
     private Long id;
 
+    @NonNull
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
     private AccountJpa sender;
 
+    @NonNull
     @ManyToOne
     @JoinColumn(name = "receiver_id", nullable = false)
     private AccountJpa receiver;
 
+    @NonNull
     @ManyToOne
     @JoinColumn(name = "server_id", nullable = false)
     private ServerJpa server;

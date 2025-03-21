@@ -32,7 +32,11 @@ public class ServerService {
     public void createServer(Long accountId, String token, String serverName) {
         AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
 
-        serverRepository.save(ServerJpa.create(serverName, accountJpa));
+        ServerJpa serverJpa = ServerJpa.create(serverName, accountJpa);
+
+        serverRepository.save(serverJpa);
+
+        addServerMember(accountJpa, serverJpa);
     }
 
     public List<BasicServer> getServers(Long accountId, String token) {
@@ -110,6 +114,10 @@ public class ServerService {
     public ServerJpa findServerWithId(Long serverId) {
         return serverRepository.findById(serverId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_SERVER_WITH_ID.formatted(serverId)));
+    }
+
+    public void addServerMember(AccountJpa accountJpa, ServerJpa serverJpa) {
+        serverMemberRepository.save(ServerMemberJpa.create(accountJpa, serverJpa));
     }
 
     public void verifyIsServerMember(Long accountId, Long serverId){

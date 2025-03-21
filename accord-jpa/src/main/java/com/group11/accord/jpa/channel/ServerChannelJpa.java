@@ -7,6 +7,9 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
+import org.hibernate.Hibernate;
+
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -22,7 +25,7 @@ public class ServerChannelJpa {
 
     public static ServerChannelJpa create(ServerJpa server, String channelName) {
         return ServerChannelJpa.builder()
-                .id(new ServerChannelId(server, ChannelJpa.create(channelName)))
+                .id(new ServerChannelId(server, ChannelJpa.create(channelName, false)))
                 .build();
     }
 
@@ -34,5 +37,23 @@ public class ServerChannelJpa {
                 false,
                 id.getChannel().getCreatedAt()
         );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+
+        ServerChannelJpa serverChannelJpa = (ServerChannelJpa) o;
+        return id.equals(serverChannelJpa.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

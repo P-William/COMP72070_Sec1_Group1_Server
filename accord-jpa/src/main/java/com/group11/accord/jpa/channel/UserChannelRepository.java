@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserChannelRepository extends JpaRepository<UserChannelJpa, Long> {
@@ -13,5 +14,5 @@ public interface UserChannelRepository extends JpaRepository<UserChannelJpa, Lon
 
     boolean existsByIdChannelId(Long channelId);
 
-    UserChannelJpa findByIdChannelId(Long channelId);
+    Optional<UserChannelJpa> findByIdChannelId(Long channelId);
 }

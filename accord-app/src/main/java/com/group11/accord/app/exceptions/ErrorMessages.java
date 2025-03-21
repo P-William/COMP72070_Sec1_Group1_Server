@@ -17,4 +17,5 @@ public class ErrorMessages {
     public static final String MISSING_SERVER_WITH_ID = "Unknown server with ID %s";
     public static final String MISSING_CHANNEL_WITH_ID = "Unknown channel with ID %s";
     public static final String CHANNEL_NOT_BOUND = "Channel is not bound to a server or direct message";
+    public static final String CHANNEL_NOT_OF_TYPE = "Channel is not of type %s and cannot have operations given type applied to it";
 }

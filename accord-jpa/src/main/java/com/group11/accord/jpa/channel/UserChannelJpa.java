@@ -22,7 +22,7 @@ public class UserChannelJpa {
 
     public static UserChannelJpa create(AccountJpa accountOne, AccountJpa accountTwo, String channelName) {
         return UserChannelJpa.builder()
-                .id(new UserChannelId(accountOne, accountTwo, ChannelJpa.create(channelName)))
+                .id(new UserChannelId(accountOne, accountTwo, ChannelJpa.create(channelName, true)))
                 .build();
     }
 

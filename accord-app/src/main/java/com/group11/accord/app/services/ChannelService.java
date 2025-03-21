@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -67,17 +68,18 @@ public class ChannelService {
 
         ChannelJpa channelJpa = getValidChannel(channelId);
 
-        //Finding if this channel is part of a server or dm
-       if (checkIsValidServerChannel(channelId, accountId) || checkValidDirectChannel(channelId, accountJpa)){
-           return channelJpa.getMessages()
-                   .stream()
-                   .map(MessageJpa::toDto)
-                   .toList();
-       }
-       else {
-           //If this happens it means the server did not link the channel to a server channel or dm channel
-           throw new ServerErrorException(ErrorMessages.CHANNEL_NOT_BOUND);
-       }
+        if (!channelJpa.getIsPrivate()){
+            ServerChannelJpa serverChannelJpa = getValidServerChannel(channelId);
+            serverService.verifyIsServerMember(accountId, serverChannelJpa.getId().getServer().getId());
+
+        } else if (!verifyFriendship(channelId, accountJpa)) {
+            throw new EntityNotFoundException(ErrorMessages.NOT_FRIENDS.formatted(accountJpa.getUsername()));
+        }
+
+        return channelJpa.getMessages()
+                .stream()
+                .map(MessageJpa::toDto)
+                .toList();
     }
 
     public void changeChannelName(Long channelId, String newName, Long accountId, String token) {
@@ -85,34 +87,28 @@ public class ChannelService {
 
         ChannelJpa channelJpa = getValidChannel(channelId);
 
-        if (checkIsValidServerChannel(channelId, accountId)){
-            ServerChannelJpa serverChannelJpa = serverChannelRepository.findByIdChannelId(channelJpa.getId());
+        if (!channelJpa.getIsPrivate()){
+            ServerChannelJpa serverChannelJpa = getValidServerChannel(channelId);
 
             serverService.validateOwner(serverChannelJpa.getId().getServer().getId(), accountId, token);
 
-            channelJpa.setName(newName);
-
-            channelRepository.save(channelJpa);
-        } else if (checkValidDirectChannel(channelId, accountJpa)) {
-            channelJpa.setName(newName);
-            channelRepository.save(channelJpa);
+        } else if (!verifyFriendship(channelId, accountJpa)) {
+            throw new EntityNotFoundException(ErrorMessages.NOT_FRIENDS.formatted(accountJpa.getUsername()));
         }
+        channelJpa.setName(newName);
+        channelRepository.save(channelJpa);
     }
 
     public void deleteServerChannel(Long channelId, Long accountId, String token) {
-        AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
+        authorizationService.validateSession(accountId, token);
 
         ChannelJpa channelJpa = getValidChannel(channelId);
 
-        if (checkIsValidServerChannel(channelId, accountId)){
-            ServerChannelJpa serverChannelJpa = serverChannelRepository.findByIdChannelId(channelJpa.getId());
+        ServerChannelJpa serverChannelJpa = getValidServerChannel(channelId);
 
-            serverService.validateOwner(serverChannelJpa.getId().getServer().getId(), accountId, token);
+        serverService.validateOwner(serverChannelJpa.getId().getServer().getId(), accountId, token);
 
-            channelRepository.delete(channelJpa);
-        } else {
-            throw new AccountNotAuthorizedException(ErrorMessages.INVALID_CHANNEL_AUTHORITY.formatted(accountJpa.getUsername()));
-        }
+        channelRepository.delete(channelJpa);
     }
 
     public void sendTextMessage(Long channelId, NewTextMessage newMessage, Long accountId, String token) {
@@ -127,42 +123,38 @@ public class ChannelService {
         return channelRepository.findById(channelId)
                 .orElseThrow(()-> new EntityNotFoundException(ErrorMessages.MISSING_CHANNEL_WITH_ID.formatted(channelId)));
     }
-    
-    public boolean checkIsValidServerChannel(Long channelId, Long accountId) {
-        if (serverChannelRepository.existsByIdChannelId(channelId)) {
-            ServerChannelJpa serverChannel = serverChannelRepository.findByIdChannelId(channelId);
 
-            serverService.verifyIsServerMember(accountId, serverChannel.getId().getServer().getId());
-            
-            return true;
+    public ServerChannelJpa getValidServerChannel(Long channelId) {
+        Optional<ServerChannelJpa> serverChannelJpa = serverChannelRepository.findByIdChannelId(channelId);
+        if (serverChannelJpa.isEmpty()){
+            throw new EntityNotFoundException(ErrorMessages.CHANNEL_NOT_OF_TYPE.formatted("ServerChannel"));
         }
-        else {
-            return false;
+
+        return serverChannelJpa.get();
+    }
+
+    public UserChannelJpa getValidUserChannel(Long channelId) {
+        Optional<UserChannelJpa> userChannelJpa = userChannelRepository.findByIdChannelId(channelId);
+        if (userChannelJpa.isEmpty()){
+            throw new EntityNotFoundException(ErrorMessages.CHANNEL_NOT_OF_TYPE.formatted("DirectMessageChannel"));
         }
+
+        return  userChannelJpa.get();
     }
     
-    public boolean checkValidDirectChannel(Long channelId, AccountJpa sender) {
-        if (userChannelRepository.existsByIdChannelId(channelId)) {//Checking if channel is between friends
-            UserChannelJpa userChannel = userChannelRepository.findByIdChannelId(channelId);
+    public boolean verifyFriendship(Long channelId, AccountJpa sender) {
+        UserChannelJpa userChannelJpa = getValidUserChannel(channelId);
+        AccountJpa friend = getFriend(sender, userChannelJpa);
 
-            AccountJpa friend = getFriend(sender, userChannel);
-
-            //Redundancy check to ensure the two users are friends
-            if (!friendRepository.existsById(new FriendId(sender, friend)) || !friendRepository.existsById(new FriendId(friend, sender))) {
-                throw new EntityNotFoundException(ErrorMessages.NOT_FRIENDS.formatted(sender.getUsername()));
-            }
-            return true;
-        }
-        else{
-            return false;
-        }
+        //Redundancy check to ensure the two users are friends
+        return friendRepository.existsById(new FriendId(sender, friend)) || friendRepository.existsById(new FriendId(friend, sender));
     }
 
     private static AccountJpa getFriend(AccountJpa sender, UserChannelJpa userChannel) {
         AccountJpa friend;
 
         //Check if user is attached to the channel
-        if (Objects.equals(userChannel.getId().getAccountTwo(), sender)) {
+        if (userChannel.getId().getAccountTwo().equals(sender)) {
             friend = userChannel.getId().getAccountOne();
         } else if (Objects.equals(userChannel.getId().getAccountOne(), sender)) {
             friend = userChannel.getId().getAccountTwo();
