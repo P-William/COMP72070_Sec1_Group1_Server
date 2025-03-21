@@ -24,10 +24,10 @@ public class ChannelJpa implements Serializable {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @NonNull
-    @OneToOne
-    @JoinColumn(name = "server_id")
-    ServerJpa server;
+//    @NonNull
+//    @OneToOne
+//    @JoinColumn(name = "server_id")
+//    ServerJpa server;
 
     @NonNull
     @Column

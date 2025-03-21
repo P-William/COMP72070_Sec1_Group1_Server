@@ -86,12 +86,9 @@ create table server_kick (
 create sequence channel_id_seq start 1 increment 1;
 create table channel (
     id bigint primary key,
-    server_id bigint,
     name text not null,
     is_private boolean not null,
-    created_at timestamp not null,
-    foreign key (server_id)
-        references server (id)
+    created_at timestamp not null
 );
 
 create table server_channel (
@@ -156,6 +153,13 @@ create table server_invite (
         references account (id),
     foreign key (server_id)
         references server (id)
+);
+
+create sequence file_id_seq start 1 increment 1;
+create table file (
+    id bigint primary key,
+    type text not null,
+    data bytea not null
 );
 
 ----------------------------------------
