@@ -25,16 +25,12 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 public class AccountService {
-    private ServerMemberRepository serverMemberRepository;
-    private AccountRepository accountRepository;
-    private AuthorizationService authorizationService;
-    private FriendRequestRepository friendRequestRepository;
-    private FriendRepository friendRepository;
-    private ServerInviteRepository serverInviteRepository;
-
-    public AccountService(ServerMemberRepository serverMemberRepository) {
-        this.serverMemberRepository = serverMemberRepository;
-    }
+    private final ServerMemberRepository serverMemberRepository;
+    private final AccountRepository accountRepository;
+    private final AuthorizationService authorizationService;
+    private final FriendRequestRepository friendRequestRepository;
+    private final FriendRepository friendRepository;
+    private final ServerInviteRepository serverInviteRepository;
 
     public void updateUsername(Long id, String token, String username) {
         authorizationService.validateSession(id, token);

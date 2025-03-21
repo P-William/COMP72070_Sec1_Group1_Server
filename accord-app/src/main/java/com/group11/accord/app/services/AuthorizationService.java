@@ -25,8 +25,8 @@ import java.util.Base64;
 @RequiredArgsConstructor
 public class AuthorizationService {
 
-    private AccountRepository accountRepository;
-    private SessionRepository sessionRepository;
+    private final AccountRepository accountRepository;
+    private final SessionRepository sessionRepository;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 

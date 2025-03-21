@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AccountController {
 
-    AccountService accountService;
+    private final AccountService accountService;
 
     @PostMapping("/username/{accountId}")
     @Operation(summary = "Update a users username")

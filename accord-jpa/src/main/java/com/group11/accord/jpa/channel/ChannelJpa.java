@@ -1,7 +1,7 @@
 package com.group11.accord.jpa.channel;
 
-import com.group11.accord.api.channel.Channel;
 import com.group11.accord.jpa.message.MessageJpa;
+import com.group11.accord.jpa.server.ServerJpa;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,8 +42,8 @@ public class ChannelJpa implements Serializable {
 
     public static ChannelJpa create(String name) {
         return ChannelJpa.builder()
-                .name(name)
-                .build();
+            .name(name)
+            .build();
     }
 
 

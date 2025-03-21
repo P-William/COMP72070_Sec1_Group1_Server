@@ -22,12 +22,12 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class ServerService {
-    private ServerKickRepository serverKickRepository;
-    private AccountService accountService;
-    private ServerMemberRepository serverMemberRepository;
-    private ServerBanRepository serverBanRepository;
-    private AuthorizationService authorizationService;
-    private ServerRepository serverRepository;
+    private final ServerKickRepository serverKickRepository;
+    private final AccountService accountService;
+    private final ServerMemberRepository serverMemberRepository;
+    private final ServerBanRepository serverBanRepository;
+    private final AuthorizationService authorizationService;
+    private final ServerRepository serverRepository;
 
     public void createServer(Long accountId, String token, String serverName) {
         AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);

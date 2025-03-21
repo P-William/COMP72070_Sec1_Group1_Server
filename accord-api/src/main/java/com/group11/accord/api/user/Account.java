@@ -17,12 +17,10 @@ public record Account(
         @Schema(description = "The account's username")
         String username,
 
-        @NonNull
         @Schema(description = "The account's biography")
         @Size(max = 512, message = "Users biography can be a maximum of 512 characters")
         String bio,
-
-        @NonNull
+        
         @Schema(description = "A link to the account's profile picture")
         String profilePicUrl
 ) { }

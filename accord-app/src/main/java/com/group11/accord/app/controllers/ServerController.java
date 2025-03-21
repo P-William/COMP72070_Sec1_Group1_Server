@@ -26,13 +26,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ServerController {
 
-    ServerService serverService;
+    private final ServerService serverService;
 
     //CRUD
 
     //Create
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/{accountId}")
+    @PostMapping("/create/{accountId}")
     @Operation(summary = "Create a new server")
     void createServer(
             @PathVariable @NotNull(message = "Account of the server owner ID is required") Long accountId,
@@ -111,7 +111,7 @@ public class ServerController {
         serverService.banFromServer(serverId, accountId, token, banUpload);
     }
 
-    @PostMapping("/{serverId}")
+    @PostMapping("/leave/{serverId}")
     @Operation(summary = "Leave a server")
     void leaveServer(
             @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
