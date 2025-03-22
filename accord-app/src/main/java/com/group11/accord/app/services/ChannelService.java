@@ -9,6 +9,8 @@ import com.group11.accord.app.exceptions.ErrorMessages;
 import com.group11.accord.app.exceptions.ServerErrorException;
 import com.group11.accord.jpa.channel.*;
 import com.group11.accord.jpa.message.MessageJpa;
+import com.group11.accord.jpa.message.MessageRepository;
+import com.group11.accord.jpa.message.MessageType;
 import com.group11.accord.jpa.server.ServerJpa;
 import com.group11.accord.jpa.user.AccountJpa;
 import com.group11.accord.jpa.user.friend.FriendId;
@@ -33,6 +35,7 @@ public class ChannelService {
     private final ChannelRepository channelRepository;
     private final ServerChannelRepository serverChannelRepository;
     private final UserChannelRepository userChannelRepository;
+    private final MessageRepository messageRepository;
 
     public Channel createServerChannel(Long serverId, String channelName, Long accountId, String token) {
         authorizationService.validateSession(accountId, token);
@@ -117,7 +120,19 @@ public class ChannelService {
     }
 
     public void sendTextMessage(Long channelId, NewTextMessage newMessage, Long accountId, String token) {
+        AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
 
+        ChannelJpa channelJpa = getValidChannel(channelId);
+
+        if (!channelJpa.getIsPrivate()){
+            ServerChannelJpa serverChannelJpa = getValidServerChannel(channelId);
+            serverService.verifyIsServerMember(accountId, serverChannelJpa.getId().getServer().getId());
+        }
+        else if (!verifyFriendship(channelId, accountJpa)){
+            throw new EntityNotFoundException(ErrorMessages.NOT_FRIENDS.formatted(accountJpa.getUsername()));
+        }
+
+        messageRepository.save(MessageJpa.create(accountJpa, newMessage.content(), channelJpa, MessageType.TEXT));
     }
 
     public void sendImageMessage(Long channelId, NewImageMessage newMessage, Long accountId, String token) {

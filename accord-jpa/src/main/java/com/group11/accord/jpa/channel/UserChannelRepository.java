@@ -15,4 +15,6 @@ public interface UserChannelRepository extends JpaRepository<UserChannelJpa, Lon
     boolean existsByIdChannelId(Long channelId);
 
     Optional<UserChannelJpa> findByIdChannelId(Long channelId);
+
+    boolean existsByIdAccountOneOrIdAccountTwo(AccountJpa accountOne, AccountJpa accountTwo);
 }

@@ -9,11 +9,6 @@ import lombok.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-enum MessageType {
-    TEXT,
-    IMAGE
-}
-
 @Getter
 @Setter
 @Entity
@@ -51,6 +46,16 @@ public class MessageJpa implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column
     private MessageType type;
+
+    public static MessageJpa create(AccountJpa accountJpa, String content, ChannelJpa channelJpa, MessageType type) {
+        return MessageJpa.builder()
+                .author(accountJpa)
+                .content(content)
+                .channel(channelJpa)
+                .sentAt(LocalDateTime.now())
+                .type(type)
+                .build();
+    }
 
     public Message toDto() {
         boolean isImage = type.equals(MessageType.IMAGE);
