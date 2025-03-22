@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 public class FriendRequestJpa implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_id_seq")
-    @SequenceGenerator(name = "account_id_seq", sequenceName = "account_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "friend_req_id_seq")
+    @SequenceGenerator(name = "friend_req_id_seq", sequenceName = "friend_req_id_seq", allocationSize = 1)
     @Setter(AccessLevel.NONE)
     private Long id;
 

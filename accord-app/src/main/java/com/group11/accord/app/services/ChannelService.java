@@ -14,6 +14,7 @@ import com.group11.accord.jpa.user.AccountJpa;
 import com.group11.accord.jpa.user.friend.FriendId;
 import com.group11.accord.jpa.user.friend.FriendRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ChannelService {
     private final FriendRepository friendRepository;
@@ -36,8 +38,11 @@ public class ChannelService {
         authorizationService.validateSession(accountId, token);
 
         ServerJpa server = serverService.validateOwner(serverId, accountId, token);
+        ChannelJpa channelJpa = ChannelJpa.create(channelName, false);
 
-        return serverChannelRepository.save(ServerChannelJpa.create(server, channelName)).toDto();
+        channelRepository.save(channelJpa);
+
+        return serverChannelRepository.save(ServerChannelJpa.create(server, channelJpa)).toDto();
     }
 
     public List<Channel> getDmChannels(Long accountId, String token) {

@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -38,12 +39,13 @@ public class ChannelJpa implements Serializable {
     LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "channel")
-    private List<MessageJpa> messages;
+    private List<MessageJpa> messages = new ArrayList<>();
 
     public static ChannelJpa create(String name, Boolean isPrivate) {
         return ChannelJpa.builder()
             .name(name)
                 .isPrivate(isPrivate)
+                .createdAt(LocalDateTime.now())
             .build();
     }
 

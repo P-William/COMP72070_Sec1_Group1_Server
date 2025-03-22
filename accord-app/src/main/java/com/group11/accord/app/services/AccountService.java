@@ -92,12 +92,12 @@ public class AccountService {
                         .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_USERNAME.formatted(username)));
 
         //In case client side accidentally sends a friend request to an existing user
-        if (!accountRepository.existsByFriends(receiver)){
+        if (accountRepository.existsByFriends(receiver)){
             throw new EntityExistsException(ErrorMessages.ALREADY_FRIENDS.formatted(receiver.getUsername()));
         }
 
         //Check if a friend request to this user has already been sent by the sender
-        if (!friendRequestRepository.existsBySenderAndReceiver(sender, receiver)) {
+        if (friendRequestRepository.existsBySenderAndReceiver(sender, receiver)) {
             throw new EntityExistsException(ErrorMessages.FRIEND_REQUEST_ALREADY_EXISTS.formatted(receiver.getUsername()));
         }
 
@@ -107,13 +107,13 @@ public class AccountService {
     public void acceptFriendRequest(Long id, String token, Long requestId) {
         authorizationService.validateSession(id, token);
 
-        AccountJpa sender = accountRepository.findById(id)
+        AccountJpa friend = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(id)));
 
         FriendRequestJpa friendRequest = friendRequestRepository.findById(requestId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_FRIEND_REQUEST_WITH_ID.formatted(requestId)));
 
-        AccountJpa friend = accountRepository.findById(friendRequest.getReceiver().getId())
+        AccountJpa sender = accountRepository.findById(friendRequest.getSender().getId())
                         .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(id)));
 
         //If by some means the client side trys to accept an existing request with an existing friend then we will deny it

@@ -9,7 +9,9 @@ import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.Hibernate;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -23,9 +25,9 @@ public class ServerChannelJpa {
     @EmbeddedId
     private ServerChannelId id;
 
-    public static ServerChannelJpa create(ServerJpa server, String channelName) {
+    public static ServerChannelJpa create(ServerJpa server, ChannelJpa channelJpa) {
         return ServerChannelJpa.builder()
-                .id(new ServerChannelId(server, ChannelJpa.create(channelName, false)))
+                .id(new ServerChannelId(server, channelJpa))
                 .build();
     }
 
@@ -33,7 +35,11 @@ public class ServerChannelJpa {
         return new Channel(
                 id.getChannel().getId(),
                 id.getChannel().getName(),
-                id.getChannel().getMessages().stream().map(MessageJpa::toDto).toList(),
+                Optional.ofNullable(id.getChannel().getMessages())
+                        .orElse(List.of())
+                        .stream()
+                        .map(MessageJpa::toDto)
+                        .toList(),
                 false,
                 id.getChannel().getCreatedAt()
         );
