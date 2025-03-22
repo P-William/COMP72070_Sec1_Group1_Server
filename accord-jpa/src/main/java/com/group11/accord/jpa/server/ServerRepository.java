@@ -15,5 +15,4 @@ public interface ServerRepository extends JpaRepository<ServerJpa, Long> {
 
     List<ServerJpa> findAllByMembersIsContaining(AccountJpa accountJpa);
 
-    //void deleteById(Long serverId);
 }

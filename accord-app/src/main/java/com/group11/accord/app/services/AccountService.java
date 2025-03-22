@@ -35,9 +35,9 @@ public class AccountService {
     public void updateUsername(Long id, String token, String username) {
         authorizationService.validateSession(id, token);
 
-        AccountJpa accountJpa = accountRepository.findByUsername(username)
+        AccountJpa accountJpa = accountRepository.findById(id)
                 //If there is no account without the given username we respond with an error
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_USERNAME.formatted(username)));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(id)));
 
         if (accountRepository.existsByUsername(username)){
             throw new EntityExistsException("An account with that username already exists");
@@ -122,6 +122,7 @@ public class AccountService {
         }
 
         friendRepository.save(FriendJpa.create(sender, friend));
+        friendRepository.save(FriendJpa.create(friend, sender));
     }
 
     public List<ServerInvite> getServerInvites(Long id, String token) {
@@ -146,7 +147,7 @@ public class AccountService {
         ServerInviteJpa inviteJpa = serverInviteRepository.findById(inviteId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_SERVER_INVITE_WITH_ID.formatted(inviteId)));
 
-        if (!serverMemberRepository.existsByIdAccount(accountJpa)){
+        if (serverMemberRepository.existsByIdAccountIdAndIdServerId(accountJpa.getId(), inviteJpa.getServer().getId())){
             throw new EntityExistsException(ErrorMessages.ALREADY_MEMBER.formatted(inviteJpa.getServer().getName()));
         }
 
@@ -156,6 +157,11 @@ public class AccountService {
     public AccountJpa findAccountWithId(Long accountId) {
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(accountId)));
+    }
+
+    public AccountJpa findAccountWithUsername(String username) {
+        return accountRepository.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_USERNAME.formatted(username)));
     }
 
 }

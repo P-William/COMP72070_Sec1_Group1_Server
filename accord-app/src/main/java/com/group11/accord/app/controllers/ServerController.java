@@ -84,10 +84,11 @@ public class ServerController {
     @Operation(summary = "Invite a user to a server")
     void inviteToServer(
             @PathVariable @NotNull(message = "ID of the server to invite someone to") Long serverId,
+            @RequestParam @NotNull(message = "The username of the user to invite") String username,
             @RequestParam @NotNull(message = "Account ID of a server member is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
-
+        serverService.inviteToServer(serverId, username, accountId, token);
     }
 
     //Owner Operations dealing with members of a server

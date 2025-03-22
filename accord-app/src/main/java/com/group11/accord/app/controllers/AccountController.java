@@ -97,6 +97,7 @@ public class AccountController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/server/invite/{inviteId}")
+    @Operation(summary = "Accept an invite to a server")
     void acceptServerInvite(
             @PathVariable @NotNull(message = "The ID of the ServerInvite is required") Long inviteId,
             @RequestParam @NotNull(message = "Account ID is required") Long accountId,

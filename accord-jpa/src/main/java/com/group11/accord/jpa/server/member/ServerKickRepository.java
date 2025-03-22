@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ServerKickRepository extends JpaRepository<ServerKickJpa, Long> {
+    boolean existsByServerIdAndKickedUserId(Long serverId, Long accountId);
 }

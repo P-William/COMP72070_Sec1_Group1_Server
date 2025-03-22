@@ -6,6 +6,7 @@ import com.group11.accord.api.server.members.NewServerKick;
 import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
 import com.group11.accord.app.exceptions.ErrorMessages;
 import com.group11.accord.app.exceptions.InvalidCredentialsException;
+import com.group11.accord.app.exceptions.ServerErrorException;
 import com.group11.accord.jpa.server.ServerJpa;
 import com.group11.accord.jpa.server.ServerRepository;
 import com.group11.accord.jpa.server.member.*;
@@ -28,6 +29,7 @@ public class ServerService {
     private final ServerBanRepository serverBanRepository;
     private final AuthorizationService authorizationService;
     private final ServerRepository serverRepository;
+    private final ServerInviteRepository serverInviteRepository;
 
     public void createServer(Long accountId, String token, String serverName) {
         AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
@@ -64,28 +66,50 @@ public class ServerService {
         serverRepository.deleteById(serverId);
     }
 
+    public void inviteToServer(Long serverId, String username, Long accountId, String token) {
+        ServerJpa serverJpa = validateOwner(serverId, accountId, token);
+        verifyIsServerMember(accountId, serverId);
+
+        boolean alreadyMember = serverJpa.getMembers()
+                .stream()
+                .anyMatch(member -> member.getUsername().equals(username));
+        if (alreadyMember){
+            throw new ServerErrorException(ErrorMessages.ALREADY_MEMBER.formatted(username));
+        }
+
+        AccountJpa sender = accountService.findAccountWithId(accountId);
+        AccountJpa receiver = accountService.findAccountWithUsername(username);
+
+        serverInviteRepository.save(ServerInviteJpa.create(sender, receiver, serverJpa));
+    }
+
     public void kickFromServer(Long serverId, Long accountId, String token, NewServerKick kickUpload) {
         ServerJpa server = validateOwner(serverId, accountId, token);
 
-        verifyIsServerMember(kickUpload.kickedUser().id(), serverId);
-
         AccountJpa kickedUser = accountService.findAccountWithId(kickUpload.kickedUser().id());
 
-        AccountJpa kickedBy = accountService.findAccountWithId(kickUpload.kickedBy().id());
+        verifyIsServerMember(kickedUser.getId(), serverId);
+
+        AccountJpa kickedBy = accountService.findAccountWithId(accountId);
+
+        verifyIsServerMember(kickedBy.getId(), serverId);
 
         serverKickRepository.save(ServerKickJpa.create(server, kickedUser, kickedBy, kickUpload.reason()));
 
+        //Probably doesn't need to be a job since a user should be instantly banned
         serverMemberRepository.deleteByIdAccountIdAndIdServerId(kickedUser.getId(), serverId);
     }
 
     public void banFromServer(Long serverId, Long accountId, String token, NewServerBan banUpload) {
         ServerJpa server = validateOwner(serverId, accountId, token);
 
-        verifyIsServerMember(banUpload.bannedUser().id(), serverId);
-
         AccountJpa bannedUser = accountService.findAccountWithId(banUpload.bannedUser().id());
 
-        AccountJpa bannedBy = accountService.findAccountWithId(banUpload.bannedBy().id());
+        verifyIsServerMember(bannedUser.getId(), serverId);
+
+        AccountJpa bannedBy = accountService.findAccountWithId(accountId);
+
+        verifyIsServerMember(bannedBy.getId(), serverId);
 
         serverBanRepository.save(ServerBanJpa.create(server, bannedUser, bannedBy, banUpload.reason()));
 
