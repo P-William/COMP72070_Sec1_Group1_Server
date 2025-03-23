@@ -1,6 +1,7 @@
 package com.group11.accord.app.services;
 
 import com.group11.accord.api.server.BasicServer;
+import com.group11.accord.api.server.Server;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
 import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
@@ -31,14 +32,16 @@ public class ServerService {
     private final ServerRepository serverRepository;
     private final ServerInviteRepository serverInviteRepository;
 
-    public void createServer(Long accountId, String token, String serverName) {
+    public BasicServer createServer(Long accountId, String token, String serverName) {
         AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
 
         ServerJpa serverJpa = ServerJpa.create(serverName, accountJpa);
 
-        serverRepository.save(serverJpa);
+        ServerJpa server = serverRepository.save(serverJpa);
 
         addServerMember(accountJpa, serverJpa);
+
+        return server.toBasicDto();
     }
 
     public List<BasicServer> getServers(Long accountId, String token) {

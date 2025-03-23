@@ -1,6 +1,7 @@
 package com.group11.accord.app.controllers;
 
 import com.group11.accord.api.server.BasicServer;
+import com.group11.accord.api.server.Server;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
 import com.group11.accord.app.services.ServerService;
@@ -34,12 +35,12 @@ public class ServerController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/create/{accountId}")
     @Operation(summary = "Create a new server")
-    void createServer(
+    BasicServer createServer(
             @PathVariable @NotNull(message = "Account of the server owner ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token,
             @RequestParam @NotNull(message = "The name of the new server is required") String serverName
     ) {
-        serverService.createServer(accountId, token, serverName);
+        return serverService.createServer(accountId, token, serverName);
     }
 
     //Read
