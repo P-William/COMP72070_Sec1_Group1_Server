@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 )
 public record MessageDeletion(
     @NonNull
-    @Schema(description = "The id of the message being deelted.")
+    @Schema(description = "The id of the message being deleted.")
     Long id,
 
     @NonNull
