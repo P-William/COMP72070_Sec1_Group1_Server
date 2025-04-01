@@ -45,15 +45,18 @@ public class AccountJpa implements Serializable {
     @Column
     private LocalDateTime createdAt;
 
+    @Builder.Default
     @NonNull
     @Column
-    private Boolean deleted;
+    private Boolean deleted = false;
 
+    @Builder.Default
     @Column
-    private String bio;
+    private String bio = "";
 
+    @Builder.Default
     @Column
-    private String profileUrl;
+    private String profileUrl = "";
 
     @Setter(AccessLevel.NONE)
     @Builder.Default

@@ -25,8 +25,8 @@ import java.util.Base64;
 @RequiredArgsConstructor
 public class AuthorizationService {
 
-    private AccountRepository accountRepository;
-    private SessionRepository sessionRepository;
+    private final AccountRepository accountRepository;
+    private final SessionRepository sessionRepository;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -69,11 +69,25 @@ public class AuthorizationService {
         accountRepository.save(accountJpa);
     }
 
+    public boolean canSubscribe(Long accountId, String token, String url) {
+        // TODO: This needs to be changed later to check if the user has access to subscribe to the topic
+        boolean valid = validateAuthToken(accountId, token);
+        if (!valid) {
+            return false;
+        }
+
+        return true;
+    }
+
     // Utility functions--written by William P
     public void validateSession(Long accountId, String token) {
         if (!sessionRepository.sessionExists(accountId, token)) {
             throw new InvalidCredentialsException(ErrorMessages.INVALID_CREDENTIALS);
         }
+    }
+
+    public boolean validateAuthToken(Long accountId, String token) {
+        return sessionRepository.sessionExists(accountId, token);
     }
 
     public void validatePassword(@NonNull AccountJpa accountJpa, String password) {

@@ -3,9 +3,11 @@ package com.group11.accord.app.controller;
 import com.group11.accord.api.server.ServerEdit;
 import com.group11.accord.api.user.Account;
 import com.group11.accord.app.websockets.ServerPublisher;
+import com.group11.accord.app.websockets.auth.SubscriptionRegistry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
 
     private final ServerPublisher serverPublisher;
+    private final SubscriptionRegistry subscriptionRegistry;
     private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("/test")
@@ -24,6 +27,11 @@ public class TestController {
 
         messagingTemplate.convertAndSend("/server/123", edit);
 //        serverPublisher.publishServerEdit(edit);
+    }
+
+    @PostMapping("/test")
+    public void removeAccess() {
+        subscriptionRegistry.removeTopicSubscriptionByUser(3L);
     }
 
 

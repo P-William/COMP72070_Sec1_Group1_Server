@@ -1,9 +1,11 @@
 package com.group11.accord.app.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.authorization.AuthorizationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -12,12 +14,21 @@ import org.springframework.security.web.access.intercept.RequestAuthorizationCon
 
 import java.util.List;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private static final List<String> ALLOWED_PATHS = List.of(
-        "/"
+        "/",
+        "/ws/"
+    );
+
+    private static final List<String> WS_TOPICS = List.of(
+        "/server",
+        "/channel",
+        "/user",
+        "/message"
     );
 
     @Bean
@@ -38,8 +49,13 @@ public class SecurityConfig {
             String cfHeader = context.getRequest().getHeader("CF-Connecting-IP");
             String remoteAddr = context.getRequest().getRemoteAddr();
 
+            log.info("Request URL: {}", requestUrl);
+            log.info("Request URI: {}", requestUri);
+            log.info("CF Header: {}", cfHeader);
+            log.info("Remote Addr: {}", remoteAddr);
+
             boolean isLocalRequest = cfHeader == null &&
-                (remoteAddr.startsWith("192.168.") || remoteAddr.startsWith("127.0."));
+                (remoteAddr.startsWith("192.168.") || remoteAddr.startsWith("127.0.") || remoteAddr.startsWith("localhost"));
             boolean isCloudflareRequest = cfHeader != null &&
                 requestUrl.startsWith("http://accord-api.the-hero.dev");
 
