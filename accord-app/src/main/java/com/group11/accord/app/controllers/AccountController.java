@@ -5,13 +5,17 @@ import com.group11.accord.api.user.Account;
 import com.group11.accord.api.user.friend.FriendRequest;
 import com.group11.accord.app.services.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -106,4 +110,13 @@ public class AccountController {
         accountService.acceptServerInvite(accountId, inviteId, token);
     }
 
+    @PatchMapping(value = "/pic/{accountId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Update a users profile picture")
+    String changeProfilePicture(
+            @PathVariable @NotNull(message = "Account ID is required") Long accountId,
+            @RequestParam @NotNull(message = "Token is required") String token,
+            @RequestParam @NotNull(message = "A valid image is required") MultipartFile image
+            ) {
+        return accountService.changeProfilePic(accountId, token, image);
+    }
 }

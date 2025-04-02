@@ -32,6 +32,8 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger
+    
+
 cors:
   urls: https://accord-api.the-hero.dev, http://localhost:7010
   methods: GET, POST, DELETE, PUT, PATCH, OPTIONS

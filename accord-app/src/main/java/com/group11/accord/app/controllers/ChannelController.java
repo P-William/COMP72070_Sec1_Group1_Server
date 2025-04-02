@@ -12,8 +12,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -43,7 +45,6 @@ public class ChannelController {
 
     //R
     @GetMapping("/dm/{accountId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary= "Retrieve all dm channels belonging to a user")
     List<Channel> getDmChannels(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
@@ -109,16 +110,16 @@ public class ChannelController {
         channelService.sendTextMessage(channelId, newMessage, accountId, token);
     }
 
-    @PostMapping("/{channelId}/image")
+    @PostMapping(value="/{channelId}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Send a image in a message to a channel")
     void sendImageMessage(
             @PathVariable @NotNull(message = "The ID of the channel is required") Long channelId,
             @RequestParam @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token,
-            @RequestBody @Valid NewImageMessage newMessage
-    ) {
-
+            @RequestBody @Valid MultipartFile image
+            ) {
+        channelService.sendImageMessage(channelId, image, accountId, token);
     }
 
 }

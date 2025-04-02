@@ -19,6 +19,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +37,7 @@ public class ChannelService {
     private final ServerChannelRepository serverChannelRepository;
     private final UserChannelRepository userChannelRepository;
     private final MessageRepository messageRepository;
+    private final FileService fileService;
 
     public Channel createServerChannel(Long serverId, String channelName, Long accountId, String token) {
         authorizationService.validateSession(accountId, token);
@@ -135,8 +137,20 @@ public class ChannelService {
         messageRepository.save(MessageJpa.create(accountJpa, newMessage.content(), channelJpa, MessageType.TEXT));
     }
 
-    public void sendImageMessage(Long channelId, NewImageMessage newMessage, Long accountId, String token) {
+    public void sendImageMessage(Long channelId, MultipartFile image, Long accountId, String token) {
+        AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
 
+        ChannelJpa channelJpa = getValidChannel(channelId);
+
+        if (!channelJpa.getIsPrivate()){
+            ServerChannelJpa serverChannelJpa = getValidServerChannel(channelId);
+            serverService.verifyIsServerMember(accountId, serverChannelJpa.getId().getServer().getId());
+        }
+        else if (!verifyFriendship(channelId, accountJpa)){
+            throw new EntityNotFoundException(ErrorMessages.NOT_FRIENDS.formatted(accountJpa.getUsername()));
+        }
+
+        messageRepository.save(MessageJpa.create(accountJpa, fileService.saveImage(image), channelJpa, MessageType.IMAGE));
     }
 
     public ChannelJpa getValidChannel(Long channelId) {

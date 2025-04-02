@@ -4,6 +4,11 @@ import com.group11.accord.api.server.members.ServerInvite;
 import com.group11.accord.api.user.Account;
 import com.group11.accord.api.user.friend.FriendRequest;
 import com.group11.accord.app.exceptions.ErrorMessages;
+import com.group11.accord.jpa.channel.ChannelJpa;
+import com.group11.accord.jpa.channel.ChannelRepository;
+import com.group11.accord.jpa.channel.UserChannelJpa;
+import com.group11.accord.jpa.channel.UserChannelRepository;
+import com.group11.accord.jpa.file.FileJpa;
 import com.group11.accord.jpa.server.member.ServerInviteJpa;
 import com.group11.accord.jpa.server.member.ServerInviteRepository;
 import com.group11.accord.jpa.server.member.ServerMemberJpa;
@@ -16,7 +21,9 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +38,9 @@ public class AccountService {
     private final FriendRequestRepository friendRequestRepository;
     private final FriendRepository friendRepository;
     private final ServerInviteRepository serverInviteRepository;
+    private final FileService fileService;
+    private final ChannelRepository channelRepository;
+    private final UserChannelRepository userChannelRepository;
 
     public void updateUsername(Long id, String token, String username) {
         authorizationService.validateSession(id, token);
@@ -92,7 +102,7 @@ public class AccountService {
                         .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_USERNAME.formatted(username)));
 
         //In case client side accidentally sends a friend request to an existing user
-        if (accountRepository.existsByFriends(receiver)){
+        if (friendRepository.existsById(new FriendId(sender, receiver)) || friendRepository.existsById(new FriendId(receiver, sender))){
             throw new EntityExistsException(ErrorMessages.ALREADY_FRIENDS.formatted(receiver.getUsername()));
         }
 
@@ -123,6 +133,11 @@ public class AccountService {
 
         friendRepository.save(FriendJpa.create(sender, friend));
         friendRepository.save(FriendJpa.create(friend, sender));
+
+        ChannelJpa channelJpa = ChannelJpa.create(sender.getUsername() + " and " + friend.getUsername(), true);
+        channelRepository.save(channelJpa);
+
+        userChannelRepository.save(UserChannelJpa.create(sender, friend, channelJpa));
     }
 
     public List<ServerInvite> getServerInvites(Long id, String token) {
@@ -152,6 +167,14 @@ public class AccountService {
         }
 
         serverMemberRepository.save(ServerMemberJpa.create(accountJpa, inviteJpa.getServer()));
+    }
+
+    public String changeProfilePic(Long accountId, String token, MultipartFile image){
+        AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
+
+        accountJpa.setProfilePicUrl(fileService.saveImage(image));
+
+        return accountJpa.getProfilePicUrl();
     }
 
     public AccountJpa findAccountWithId(Long accountId) {

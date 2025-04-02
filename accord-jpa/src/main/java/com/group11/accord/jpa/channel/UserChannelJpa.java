@@ -20,9 +20,9 @@ public class UserChannelJpa {
     @EmbeddedId
     private UserChannelId id;
 
-    public static UserChannelJpa create(AccountJpa accountOne, AccountJpa accountTwo, String channelName) {
+    public static UserChannelJpa create(AccountJpa accountOne, AccountJpa accountTwo, ChannelJpa channelJpa) {
         return UserChannelJpa.builder()
-                .id(new UserChannelId(accountOne, accountTwo, ChannelJpa.create(channelName, true)))
+                .id(new UserChannelId(accountOne, accountTwo, channelJpa))
                 .build();
     }
 

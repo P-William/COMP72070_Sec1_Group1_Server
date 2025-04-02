@@ -1,12 +1,7 @@
-package com.group11.accord.jpa;
+package com.group11.accord.jpa.file;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-enum FileType {
-    PNG,
-    JPEG
-}
 
 @Getter
 @Setter
@@ -31,4 +26,11 @@ public class FileJpa {
     @NonNull
     @Column
     private byte[] data;
+
+    public static FileJpa create(FileType type, byte[] data){
+        return FileJpa.builder()
+                .type(type)
+                .data(data)
+                .build();
+    }
 }

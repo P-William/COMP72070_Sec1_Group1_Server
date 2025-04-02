@@ -4,6 +4,7 @@ import com.group11.accord.api.errors.ProblemDetailFactory;
 import com.group11.accord.api.errors.ValidationDetail;
 import com.group11.accord.api.errors.ValidationProcessor;
 import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
+import com.group11.accord.app.exceptions.FileProcessingException;
 import com.group11.accord.app.exceptions.InvalidCredentialsException;
 import com.group11.accord.app.exceptions.ServerErrorException;
 import jakarta.persistence.EntityExistsException;
@@ -45,6 +46,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ServerErrorException.class)
     public ProblemDetail serverErrorException(ServerErrorException e) {
+        return ProblemDetailFactory.createProblemDetail(HttpStatus.INTERNAL_SERVER_ERROR, e);
+    }
+
+    @ExceptionHandler(FileProcessingException.class)
+    public ProblemDetail fileProcessingException(FileProcessingException e) {
         return ProblemDetailFactory.createProblemDetail(HttpStatus.INTERNAL_SERVER_ERROR, e);
     }
 
