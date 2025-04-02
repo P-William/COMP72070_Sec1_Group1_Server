@@ -9,11 +9,11 @@ public record NewServerBan(
 
         @NonNull
         @Schema(description = "The user to ban")
-        Account bannedUser,
+        Long bannedUserId,
 
         @NonNull
         @Schema(description = "The user that is banning the user")
-        Account bannedBy,
+        Long bannedById,
 
         @NonNull
         @Schema(description = "The reason for the ban")

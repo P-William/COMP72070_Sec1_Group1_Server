@@ -89,7 +89,7 @@ public class ServerService {
     public void kickFromServer(Long serverId, Long accountId, String token, NewServerKick kickUpload) {
         ServerJpa server = validateOwner(serverId, accountId, token);
 
-        AccountJpa kickedUser = accountService.findAccountWithId(kickUpload.kickedUser().id());
+        AccountJpa kickedUser = accountService.findAccountWithId(kickUpload.kickedUserId());
 
         verifyIsServerMember(kickedUser.getId(), serverId);
 
@@ -106,7 +106,7 @@ public class ServerService {
     public void banFromServer(Long serverId, Long accountId, String token, NewServerBan banUpload) {
         ServerJpa server = validateOwner(serverId, accountId, token);
 
-        AccountJpa bannedUser = accountService.findAccountWithId(banUpload.bannedUser().id());
+        AccountJpa bannedUser = accountService.findAccountWithId(banUpload.bannedUserId());
 
         verifyIsServerMember(bannedUser.getId(), serverId);
 

@@ -9,11 +9,11 @@ public record NewServerKick(
 
         @NonNull
         @Schema(description = "The user to kick")
-        Account kickedUser,
+        Long kickedUserId,
 
         @NonNull
         @Schema(description = "The user that is kicking the user")
-        Account kickedBy,
+        Long kickedById,
 
         @NonNull
         @Schema(description = "The reason for the kick")
