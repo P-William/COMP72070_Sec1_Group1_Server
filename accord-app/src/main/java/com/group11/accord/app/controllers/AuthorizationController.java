@@ -63,7 +63,7 @@ public class AuthorizationController {
             @RequestParam @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
-
+        authorizationService.logoutAccount(accountId, token);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

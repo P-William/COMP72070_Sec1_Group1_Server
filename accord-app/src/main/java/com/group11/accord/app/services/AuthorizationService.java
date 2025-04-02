@@ -7,6 +7,7 @@ import com.group11.accord.app.exceptions.ErrorMessages;
 import com.group11.accord.app.exceptions.InvalidCredentialsException;
 import com.group11.accord.jpa.user.AccountJpa;
 import com.group11.accord.jpa.user.AccountRepository;
+import com.group11.accord.jpa.user.session.SessionId;
 import com.group11.accord.jpa.user.session.SessionJpa;
 import com.group11.accord.jpa.user.session.SessionRepository;
 import jakarta.persistence.EntityExistsException;
@@ -51,6 +52,12 @@ public class AuthorizationService {
         validatePassword(accountJpa, password);
 
         return sessionRepository.save(SessionJpa.create(generateToken(), accountJpa)).getId().toDto();
+    }
+
+    public void logoutAccount(Long accountId, String token) {
+        validateSession(accountId, token);
+
+        sessionRepository.deleteByIdAccountIdAndIdToken(accountId, token);
     }
 
     public void changePassword(Long accountId, String token, String newPassword, String oldPassword) {
