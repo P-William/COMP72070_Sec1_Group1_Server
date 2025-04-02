@@ -1,11 +1,16 @@
 package com.group11.accord.app.services;
 
+import com.group11.accord.api.channel.Channel;
 import com.group11.accord.api.server.BasicServer;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
 import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
 import com.group11.accord.app.exceptions.ErrorMessages;
 import com.group11.accord.app.exceptions.ServerErrorException;
+import com.group11.accord.jpa.channel.ChannelJpa;
+import com.group11.accord.jpa.channel.ChannelRepository;
+import com.group11.accord.jpa.channel.ServerChannelJpa;
+import com.group11.accord.jpa.channel.ServerChannelRepository;
 import com.group11.accord.jpa.server.ServerJpa;
 import com.group11.accord.jpa.server.ServerRepository;
 import com.group11.accord.jpa.server.member.*;
@@ -29,6 +34,21 @@ public class ServerService {
     private final ServerRepository serverRepository;
     private final ServerInviteRepository serverInviteRepository;
 
+    private final static String defaultChannel = "General";
+    private final ChannelRepository channelRepository;
+    private final ServerChannelRepository serverChannelRepository;
+
+    public Channel createServerChannel(Long serverId, String channelName, Long accountId, String token) {
+        authorizationService.validateSession(accountId, token);
+
+        ServerJpa server = validateOwner(serverId, accountId, token);
+        ChannelJpa channelJpa = ChannelJpa.create(channelName, false);
+
+        channelRepository.save(channelJpa);
+
+        return serverChannelRepository.save(ServerChannelJpa.create(server, channelJpa)).toDto();
+    }
+
     public BasicServer createServer(Long accountId, String token, String serverName) {
         AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
 
@@ -37,6 +57,8 @@ public class ServerService {
         ServerJpa server = serverRepository.save(serverJpa);
 
         addServerMember(accountJpa, serverJpa);
+
+        createServerChannel(server.getId(), defaultChannel, accountId, token);
 
         return server.toBasicDto();
     }

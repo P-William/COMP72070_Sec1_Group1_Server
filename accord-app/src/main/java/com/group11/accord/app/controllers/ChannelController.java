@@ -4,6 +4,7 @@ import com.group11.accord.api.channel.Channel;
 import com.group11.accord.api.message.Message;
 import com.group11.accord.api.message.NewTextMessage;
 import com.group11.accord.app.services.ChannelService;
+import com.group11.accord.app.services.ServerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -27,6 +28,7 @@ import java.util.List;
 public class ChannelController {
 
     private final ChannelService channelService;
+    private final ServerService serverService;
 
     //CRUD
 
@@ -39,7 +41,7 @@ public class ChannelController {
             @RequestParam @NotNull(message = "Token is required") String token,
             @RequestParam @NotNull(message = "A name for the new channel is required") String channelName
     ) {
-        return channelService.createServerChannel(serverId, channelName, accountId, token);
+        return serverService.createServerChannel(serverId, channelName, accountId, token);
     }
 
     //R

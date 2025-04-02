@@ -37,16 +37,7 @@ public class ChannelService {
     private final MessageRepository messageRepository;
     private final FileService fileService;
 
-    public Channel createServerChannel(Long serverId, String channelName, Long accountId, String token) {
-        authorizationService.validateSession(accountId, token);
 
-        ServerJpa server = serverService.validateOwner(serverId, accountId, token);
-        ChannelJpa channelJpa = ChannelJpa.create(channelName, false);
-
-        channelRepository.save(channelJpa);
-
-        return serverChannelRepository.save(ServerChannelJpa.create(server, channelJpa)).toDto();
-    }
 
     public List<Channel> getDmChannels(Long accountId, String token) {
         AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
