@@ -1,6 +1,5 @@
 package com.group11.accord.jpa.server.member;
 
-import com.group11.accord.jpa.channel.ServerChannelId;
 import com.group11.accord.jpa.server.ServerJpa;
 import com.group11.accord.jpa.user.AccountJpa;
 import jakarta.persistence.Embeddable;

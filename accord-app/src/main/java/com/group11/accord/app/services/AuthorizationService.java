@@ -7,7 +7,6 @@ import com.group11.accord.app.exceptions.ErrorMessages;
 import com.group11.accord.app.exceptions.InvalidCredentialsException;
 import com.group11.accord.jpa.user.AccountJpa;
 import com.group11.accord.jpa.user.AccountRepository;
-import com.group11.accord.jpa.user.session.SessionId;
 import com.group11.accord.jpa.user.session.SessionJpa;
 import com.group11.accord.jpa.user.session.SessionRepository;
 import jakarta.persistence.EntityExistsException;

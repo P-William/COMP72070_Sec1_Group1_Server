@@ -1,7 +1,6 @@
 package com.group11.accord.app.controllers;
 
 import com.group11.accord.api.server.BasicServer;
-import com.group11.accord.api.server.Server;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
 import com.group11.accord.app.services.ServerService;

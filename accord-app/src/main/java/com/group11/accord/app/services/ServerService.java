@@ -1,18 +1,15 @@
 package com.group11.accord.app.services;
 
 import com.group11.accord.api.server.BasicServer;
-import com.group11.accord.api.server.Server;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
 import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
 import com.group11.accord.app.exceptions.ErrorMessages;
-import com.group11.accord.app.exceptions.InvalidCredentialsException;
 import com.group11.accord.app.exceptions.ServerErrorException;
 import com.group11.accord.jpa.server.ServerJpa;
 import com.group11.accord.jpa.server.ServerRepository;
 import com.group11.accord.jpa.server.member.*;
 import com.group11.accord.jpa.user.AccountJpa;
-import com.group11.accord.jpa.user.AccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

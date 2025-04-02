@@ -2,7 +2,6 @@ package com.group11.accord.app.controllers;
 
 import com.group11.accord.api.channel.Channel;
 import com.group11.accord.api.message.Message;
-import com.group11.accord.api.message.NewImageMessage;
 import com.group11.accord.api.message.NewTextMessage;
 import com.group11.accord.app.services.ChannelService;
 import io.swagger.v3.oas.annotations.Operation;

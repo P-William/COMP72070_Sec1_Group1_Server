@@ -1,6 +1,5 @@
 package com.group11.accord.jpa.channel;
 
-import com.group11.accord.jpa.server.ServerJpa;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

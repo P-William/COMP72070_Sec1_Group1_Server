@@ -1,6 +1,5 @@
 package com.group11.accord.api.server.members;
 
-import com.group11.accord.api.user.Account;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Size;
 import lombok.NonNull;

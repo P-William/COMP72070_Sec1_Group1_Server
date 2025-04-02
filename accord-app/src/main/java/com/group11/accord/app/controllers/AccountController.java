@@ -5,8 +5,6 @@ import com.group11.accord.api.user.Account;
 import com.group11.accord.api.user.friend.FriendRequest;
 import com.group11.accord.app.services.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,5 @@
 package com.group11.accord.app.websockets;
 
-import com.group11.accord.api.RouteBuilder.ChannelRouteBuilder;
-import com.group11.accord.api.channel.Channel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;

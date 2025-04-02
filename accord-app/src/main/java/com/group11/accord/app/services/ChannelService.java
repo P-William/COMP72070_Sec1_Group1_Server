@@ -2,11 +2,9 @@ package com.group11.accord.app.services;
 
 import com.group11.accord.api.channel.Channel;
 import com.group11.accord.api.message.Message;
-import com.group11.accord.api.message.NewImageMessage;
 import com.group11.accord.api.message.NewTextMessage;
 import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
 import com.group11.accord.app.exceptions.ErrorMessages;
-import com.group11.accord.app.exceptions.ServerErrorException;
 import com.group11.accord.jpa.channel.*;
 import com.group11.accord.jpa.message.MessageJpa;
 import com.group11.accord.jpa.message.MessageRepository;

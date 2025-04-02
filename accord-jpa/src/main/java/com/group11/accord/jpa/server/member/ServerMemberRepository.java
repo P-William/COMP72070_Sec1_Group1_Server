@@ -1,6 +1,5 @@
 package com.group11.accord.jpa.server.member;
 
-import com.group11.accord.api.server.Server;
 import com.group11.accord.jpa.server.ServerJpa;
 import com.group11.accord.jpa.user.AccountJpa;
 import org.springframework.data.jpa.repository.JpaRepository;

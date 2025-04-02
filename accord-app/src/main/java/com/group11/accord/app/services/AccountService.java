@@ -8,7 +8,6 @@ import com.group11.accord.jpa.channel.ChannelJpa;
 import com.group11.accord.jpa.channel.ChannelRepository;
 import com.group11.accord.jpa.channel.UserChannelJpa;
 import com.group11.accord.jpa.channel.UserChannelRepository;
-import com.group11.accord.jpa.file.FileJpa;
 import com.group11.accord.jpa.server.member.ServerInviteJpa;
 import com.group11.accord.jpa.server.member.ServerInviteRepository;
 import com.group11.accord.jpa.server.member.ServerMemberJpa;
@@ -23,10 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
