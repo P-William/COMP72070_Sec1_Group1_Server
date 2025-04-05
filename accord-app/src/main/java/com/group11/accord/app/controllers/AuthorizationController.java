@@ -36,6 +36,7 @@ public class AuthorizationController {
     @ApiResponse(responseCode = "400", description = "Invalid fields provided", content = {@Content(schema = @Schema(implementation = MinimalValidationDetail.class))})
     @ApiResponse(responseCode = "409", description = "Username already exists", content = {@Content(schema = @Schema(implementation = MinimalProblemDetail.class))})
     Account createAccount(@RequestBody @NotNull @Valid NewAccount newAccount){
+        log.debug("Request to create account with username {}", newAccount.username());
         return authorizationService.createAccount(newAccount);
     }
 
@@ -49,7 +50,8 @@ public class AuthorizationController {
             @RequestParam @NotBlank(message = "Username is required") String username,
             @RequestParam @NotBlank(message = "Password is required") String password
     ){
-            return authorizationService.loginAccount(username, password);
+        log.debug("Received request to login.");
+        return authorizationService.loginAccount(username, password);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -63,6 +65,7 @@ public class AuthorizationController {
             @RequestParam @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
+        log.debug("Received request to logout.");
         authorizationService.logoutAccount(accountId, token);
     }
 

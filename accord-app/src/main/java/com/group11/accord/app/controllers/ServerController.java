@@ -39,6 +39,7 @@ public class ServerController {
             @RequestParam @NotNull(message = "Token is required") String token,
             @RequestParam @NotNull(message = "The name of the new server is required") String serverName
     ) {
+        log.debug("Received request to create server from {}", accountId);
         return serverService.createServer(accountId, token, serverName);
     }
 
@@ -49,6 +50,7 @@ public class ServerController {
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
+        log.debug("Request received to get list of servers for user {}", accountId);
         return serverService.getServers(accountId, token);
     }
 
@@ -64,6 +66,7 @@ public class ServerController {
             @RequestParam @NotNull(message = "Token is required") String token,
             @RequestParam @NotNull(message = "A new name for the server is required") String newName
     ) {
+        log.debug("Received request to change server name for server {} from user {}", serverId, accountId);
         serverService.changeServerName(serverId, accountId, token, newName);
     }
 
@@ -76,6 +79,7 @@ public class ServerController {
             @RequestParam @NotNull(message = "Account ID of the server owner is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
+        log.debug("Received request to delete server {} from user {}", serverId, accountId);
         serverService.deleteServer(serverId, accountId, token);
     }
 
@@ -88,6 +92,7 @@ public class ServerController {
             @RequestParam @NotNull(message = "Account ID of a server member is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
+        log.debug("Received request to invite user {} to server {} from {}", username, serverId, accountId);
         serverService.inviteToServer(serverId, username, accountId, token);
     }
 
@@ -101,6 +106,7 @@ public class ServerController {
             @RequestParam @NotNull(message = "Token is required") String token,
             @RequestBody @Valid NewServerKick kickUpload
     ) {
+        log.debug("Received request to kick user {} from server {} from user {}", kickUpload.kickedUserId(), serverId, accountId);
         serverService.kickFromServer(serverId, accountId, token, kickUpload);
     }
 
@@ -112,7 +118,8 @@ public class ServerController {
             @RequestParam @NotNull(message = "Owner's account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token,
             @RequestBody @Valid NewServerBan banUpload
-            ) {
+    ) {
+        log.debug("Received request to ban user {} from server {} from user {}", banUpload.bannedUserId(), serverId, accountId);
         serverService.banFromServer(serverId, accountId, token, banUpload);
     }
 
@@ -124,6 +131,7 @@ public class ServerController {
             @RequestParam @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
+        log.debug("Received request to leave server {} from user {}", serverId, accountId);
         serverService.leaveServer(serverId, accountId, token);
     }
 }

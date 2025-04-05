@@ -41,6 +41,7 @@ public class ChannelController {
             @RequestParam @NotNull(message = "Token is required") String token,
             @RequestParam @NotNull(message = "A name for the new channel is required") String channelName
     ) {
+        log.debug("Received request to create channel in server {} from account {}", serverId, accountId);
         return serverService.createServerChannel(serverId, channelName, accountId, token);
     }
 
@@ -51,6 +52,7 @@ public class ChannelController {
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
+        log.debug("Received request to get dm channels from account {}", accountId);
         return channelService.getDmChannels(accountId, token);
     }
 
@@ -61,6 +63,7 @@ public class ChannelController {
             @RequestParam @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
+        log.debug("Received request to get server channels for server {} from account {}", serverId, accountId);
         return channelService.getServerChannels(serverId, accountId, token);
     }
 
@@ -71,6 +74,7 @@ public class ChannelController {
         @PathVariable @NotNull(message = "Account ID is required") Long accountId,
         @RequestParam @NotNull(message = "Token is required") String token
     ) {
+        log.debug("Received request to get channel messages for channel {} from account {}", channelId, accountId);
         return channelService.getChannelMessages(channelId, accountId, token);
     }
 
@@ -83,6 +87,7 @@ public class ChannelController {
             @RequestParam @NotNull(message = "Token is required") String token,
             @RequestParam @NotNull(message = "A new name for the channel is required") String newName
     ) {
+        log.debug("Received request to change channel name for channel {} from user {}", channelId, accountId);
         channelService.changeChannelName(channelId, newName, accountId, token);
     }
 
@@ -95,6 +100,7 @@ public class ChannelController {
         @RequestParam @NotNull(message = "Account ID is required") Long accountId,
         @RequestParam @NotNull(message = "Token is required") String token
     ) {
+        log.debug("Received request to delete channel {} from user {}", channelId, accountId);
         channelService.deleteServerChannel(channelId, accountId, token);
     }
 
@@ -108,6 +114,7 @@ public class ChannelController {
             @RequestParam @NotNull(message = "Token is required") String token,
             @RequestBody @Valid NewTextMessage newMessage
     ) {
+        log.debug("Received request to send text message in channel {} from user {}", channelId, accountId);
         channelService.sendTextMessage(channelId, newMessage, accountId, token);
     }
 
@@ -119,7 +126,8 @@ public class ChannelController {
             @RequestParam @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token,
             @RequestBody @Valid MultipartFile image
-            ) {
+        ) {
+        log.debug("Received request to send image message in channel {} from user {}", channelId, accountId);
         channelService.sendImageMessage(channelId, image, accountId, token);
     }
 

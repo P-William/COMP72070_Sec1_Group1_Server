@@ -36,6 +36,7 @@ public class AccountController {
             @RequestParam @NotNull(message = "Token is required") String token,
             @RequestParam @NotNull(message = "A new username is required") String username
     ){
+        log.debug("Received request to change username from {}", accountId);
         accountService.updateUsername(accountId, token, username);
     }
 
@@ -45,6 +46,7 @@ public class AccountController {
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
+        log.debug("Received request for account {}", accountId);
         return accountService.getAccount(accountId, token);
     }
 
@@ -54,6 +56,7 @@ public class AccountController {
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
+        log.debug("Received request for friends list from {}", accountId);
         return accountService.getFriends(accountId, token);
     }
 
@@ -63,6 +66,7 @@ public class AccountController {
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
+        log.debug("Received request from {} for a list of friend requests.", accountId);
         return accountService.getFriendRequests(accountId, token);
     }
 
@@ -74,6 +78,7 @@ public class AccountController {
             @RequestParam @NotNull(message = "Token is required") String token,
             @RequestParam @NotNull(message = "A valid username to send a friend request to is required") String username
     ) {
+        log.debug("Received request to sent friend request from {} to user {}", accountId, username);
         accountService.sendFriendRequest(accountId, token, username);
     }
 
@@ -85,6 +90,7 @@ public class AccountController {
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ){
+        log.debug("Received request from {} to accept friend request {} as friend.", accountId, requestId);
         accountService.acceptFriendRequest(accountId, token, requestId);
     }
 
@@ -94,6 +100,7 @@ public class AccountController {
         @PathVariable @NotNull(message = "Account ID is required") Long accountId,
         @RequestParam @NotNull(message = "Token is required") String token
     ){
+        log.debug("Received request from {} to get a list of server invites.", accountId);
         return accountService.getServerInvites(accountId, token);
     }
 
@@ -105,6 +112,7 @@ public class AccountController {
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
+        log.debug("Received request from {} to accept server invite {}", accountId, inviteId);
         accountService.acceptServerInvite(accountId, inviteId, token);
     }
 
@@ -114,7 +122,8 @@ public class AccountController {
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token,
             @RequestParam @NotNull(message = "A valid image is required") MultipartFile image
-            ) {
+    ) {
+        log.debug("Received request from {} to update profile picture.", accountId);
         return accountService.changeProfilePic(accountId, token, image);
     }
 

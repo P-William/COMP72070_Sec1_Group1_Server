@@ -33,6 +33,7 @@ public class FileController {
     public ResponseEntity<byte[]> getFile(
             @PathVariable @NotNull(message = "Id of the file to retrieve is required") Long fileId
     ) {
+        log.debug("Received request for file {}", fileId);
         return fileService.getFile(fileId);
     }
 }
