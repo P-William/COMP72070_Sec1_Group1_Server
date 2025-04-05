@@ -1,6 +1,5 @@
 package com.group11.accord.api.message;
 
-import com.group11.accord.api.channel.Channel;
 import com.group11.accord.api.user.Account;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.NonNull;
@@ -21,8 +20,8 @@ public record Message(
         Account account,
 
         @NonNull
-        @Schema(description = "The channel the message was sent in")
-        Channel channel,
+        @Schema(description = "The ID of the channel the message was sent in")
+        Long channelId,
 
         @NonNull
         @Schema(description = "The content/body of the message")
@@ -30,7 +29,7 @@ public record Message(
 
         @NonNull
         @Schema(description = "If the message body is a link to an image or text")
-        String isImage,
+        Boolean isImage,
 
         @NonNull
         @Schema(description = "The timestamp from when the message was sent")

@@ -11,6 +11,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   flyway:
     enabled: true
+    baseline-on-migrate: true
   jpa:
     database: postgresql
     hibernate:
@@ -31,6 +32,8 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger
+    
+
 cors:
-  urls: https://drive-guard-api.the-hero.dev, http://localhost:7001
+  urls: https://accord-api.the-hero.dev, http://localhost:7010
   methods: GET, POST, DELETE, PUT, PATCH, OPTIONS
