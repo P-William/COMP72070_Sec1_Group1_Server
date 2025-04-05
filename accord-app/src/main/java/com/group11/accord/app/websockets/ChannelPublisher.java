@@ -1,28 +1,34 @@
 package com.group11.accord.app.websockets;
 
+import com.group11.accord.api.RouteBuilder.ChannelRouteBuilder;
+import com.group11.accord.api.channel.Channel;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChannelPublisher {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    //TODO fix needed as Channel dto currently does not have the serverId
-//    public void publishChannel(Channel channel) {
-//        String topic = ChannelRouteBuilder.createdChannel(channel.serverId());
-//        messagingTemplate.convertAndSend(topic, channel);
-//    }
-//
-//    public void publishChannelEdit(Channel channel) {
-//        String topic = ChannelRouteBuilder.editedChannel(channel.serverId());
-//        messagingTemplate.convertAndSend(topic, channel);
-//    }
-//
-//    public void publishChannelDelete(Channel channel) {
-//        String topic = ChannelRouteBuilder.deletedChannel(channel.serverId());
-//        messagingTemplate.convertAndSend(topic, channel);
-//    }
+    public void publishChannel(Long serverId, Channel channel) {
+        String topic = ChannelRouteBuilder.createdChannel(serverId);
+        messagingTemplate.convertAndSend(topic, channel);
+        log.debug("Publishing new channel created in server {}", serverId);
+    }
+
+    public void publishChannelEdit(Long serverId, Channel channel) {
+        String topic = ChannelRouteBuilder.editedChannel(serverId);
+        messagingTemplate.convertAndSend(topic, channel);
+        log.debug("Publishing channel edit for channel {} in server {}", channel.id(), serverId);
+    }
+
+    public void publishChannelDelete(Long serverId, Channel channel) {
+        String topic = ChannelRouteBuilder.deletedChannel(serverId);
+        messagingTemplate.convertAndSend(topic, channel);
+        log.debug("Publishing channel delete for channel {} in server {}", channel.id(), serverId);
+    }
 }
