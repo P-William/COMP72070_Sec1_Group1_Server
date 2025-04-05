@@ -1,5 +1,7 @@
 package com.group11.accord.jpa.server.member;
 
+import com.group11.accord.api.server.members.ServerBan;
+import com.group11.accord.api.server.members.ServerKick;
 import com.group11.accord.jpa.server.ServerJpa;
 import com.group11.accord.jpa.user.AccountJpa;
 import jakarta.persistence.*;
@@ -54,5 +56,16 @@ public class ServerBanJpa implements Serializable {
                 .reason(reason)
                 .bannedAt(LocalDateTime.now())
                 .build();
+    }
+
+    public ServerBan toDto() {
+        return new ServerBan(
+                id,
+                server.toBasicDto(),
+                bannedUser.toDto(),
+                bannedBy.toDto(),
+                bannedAt,
+                reason
+        );
     }
 }

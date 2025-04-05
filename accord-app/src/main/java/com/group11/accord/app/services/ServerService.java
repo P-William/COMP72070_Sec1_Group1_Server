@@ -2,11 +2,16 @@ package com.group11.accord.app.services;
 
 import com.group11.accord.api.channel.Channel;
 import com.group11.accord.api.server.BasicServer;
+import com.group11.accord.api.server.ServerDeletion;
+import com.group11.accord.api.server.ServerEdit;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
 import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
 import com.group11.accord.app.exceptions.ErrorMessages;
 import com.group11.accord.app.exceptions.ServerErrorException;
+import com.group11.accord.app.websockets.ChannelPublisher;
+import com.group11.accord.app.websockets.ServerPublisher;
+import com.group11.accord.app.websockets.UserPublisher;
 import com.group11.accord.jpa.channel.ChannelJpa;
 import com.group11.accord.jpa.channel.ChannelRepository;
 import com.group11.accord.jpa.channel.ServerChannelJpa;
@@ -16,6 +21,7 @@ import com.group11.accord.jpa.server.ServerRepository;
 import com.group11.accord.jpa.server.member.*;
 import com.group11.accord.jpa.user.AccountJpa;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +43,9 @@ public class ServerService {
     private final static String defaultChannel = "General";
     private final ChannelRepository channelRepository;
     private final ServerChannelRepository serverChannelRepository;
+    private final UserPublisher userPublisher;
+    private final ServerPublisher serverPublisher;
+    private final ChannelPublisher channelPublisher;
 
     public Channel createServerChannel(Long serverId, String channelName, Long accountId, String token) {
         authorizationService.validateSession(accountId, token);
@@ -46,7 +55,9 @@ public class ServerService {
 
         channelRepository.save(channelJpa);
 
-        return serverChannelRepository.save(ServerChannelJpa.create(server, channelJpa)).toDto();
+        ServerChannelJpa serverChannelJpa = serverChannelRepository.save(ServerChannelJpa.create(server, channelJpa));
+        channelPublisher.publishChannel(serverChannelJpa.getId().getServer().getId(), serverChannelJpa.toDto());
+        return serverChannelJpa.toDto();
     }
 
     public BasicServer createServer(Long accountId, String token, String serverName) {
@@ -79,13 +90,17 @@ public class ServerService {
         serverJpa.setName(newName);
 
         serverRepository.save(serverJpa);
+
+        serverPublisher.publishServerEdit(new ServerEdit(serverJpa.getId(), serverJpa.getName(), serverJpa.getOwner().toDto()));
     }
 
     public void deleteServer(Long serverId, Long accountId, String token) {
-        validateOwner(serverId, accountId, token);
+        ServerJpa serverJpa = validateOwner(serverId, accountId, token);
+
+        serverPublisher.publishServerDelete(new ServerDeletion(serverJpa.getId(), serverJpa.getName()));
 
         //Change to scheduled job probably
-        serverRepository.deleteById(serverId);
+        serverRepository.delete(serverJpa);
     }
 
     public void inviteToServer(Long serverId, String username, Long accountId, String token) {
@@ -102,10 +117,12 @@ public class ServerService {
         AccountJpa sender = accountService.findAccountWithId(accountId);
         AccountJpa receiver = accountService.findAccountWithUsername(username);
 
-        serverInviteRepository.save(ServerInviteJpa.create(sender, receiver, serverJpa));
+        ServerInviteJpa serverInviteJpa = ServerInviteJpa.create(sender, receiver, serverJpa);
+        serverInviteRepository.save(serverInviteJpa);
+        userPublisher.publishNewServerInvite(receiver.getId(), serverInviteJpa.toDto());
     }
 
-    public void kickFromServer(Long serverId, Long accountId, String token, NewServerKick kickUpload) {
+    public void kickFromServer(Long serverId, Long accountId, String token, @NotNull NewServerKick kickUpload) {
         ServerJpa server = validateOwner(serverId, accountId, token);
 
         AccountJpa kickedUser = accountService.findAccountWithId(kickUpload.kickedUserId());
@@ -116,13 +133,15 @@ public class ServerService {
 
         verifyIsServerMember(kickedBy.getId(), serverId);
 
-        serverKickRepository.save(ServerKickJpa.create(server, kickedUser, kickedBy, kickUpload.reason()));
+        ServerKickJpa serverKickJpa = ServerKickJpa.create(server, kickedUser, kickedBy, kickUpload.reason());
+        serverKickRepository.save(serverKickJpa);
+        serverPublisher.publishServerKick(serverKickJpa.toDto());
 
         //Probably doesn't need to be a job since a user should be instantly banned
         serverMemberRepository.deleteByIdAccountIdAndIdServerId(kickedUser.getId(), serverId);
     }
 
-    public void banFromServer(Long serverId, Long accountId, String token, NewServerBan banUpload) {
+    public void banFromServer(Long serverId, Long accountId, String token, @NotNull NewServerBan banUpload) {
         ServerJpa server = validateOwner(serverId, accountId, token);
 
         AccountJpa bannedUser = accountService.findAccountWithId(banUpload.bannedUserId());
@@ -133,7 +152,9 @@ public class ServerService {
 
         verifyIsServerMember(bannedBy.getId(), serverId);
 
-        serverBanRepository.save(ServerBanJpa.create(server, bannedUser, bannedBy, banUpload.reason()));
+        ServerBanJpa serverBanJpa = ServerBanJpa.create(server, bannedUser, bannedBy, banUpload.reason());
+        serverBanRepository.save(serverBanJpa);
+        serverPublisher.publishServerBan(serverBanJpa.toDto());
 
         //Probably doesn't need to be a job since a user should be instantly banned
         serverMemberRepository.deleteByIdAccountIdAndIdServerId(bannedUser.getId(), serverId);

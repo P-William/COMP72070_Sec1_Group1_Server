@@ -5,6 +5,9 @@ import com.group11.accord.api.message.Message;
 import com.group11.accord.api.message.NewTextMessage;
 import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
 import com.group11.accord.app.exceptions.ErrorMessages;
+import com.group11.accord.app.exceptions.InvalidOperationException;
+import com.group11.accord.app.websockets.ChannelPublisher;
+import com.group11.accord.app.websockets.MessagePublisher;
 import com.group11.accord.jpa.channel.*;
 import com.group11.accord.jpa.message.MessageJpa;
 import com.group11.accord.jpa.message.MessageRepository;
@@ -36,8 +39,8 @@ public class ChannelService {
     private final UserChannelRepository userChannelRepository;
     private final MessageRepository messageRepository;
     private final FileService fileService;
-
-
+    private final ChannelPublisher channelPublisher;
+    private final MessagePublisher messagePublisher;
 
     public List<Channel> getDmChannels(Long accountId, String token) {
         AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
@@ -91,11 +94,16 @@ public class ChannelService {
 
             serverService.validateOwner(serverChannelJpa.getId().getServer().getId(), accountId, token);
 
+            channelJpa.setName(newName);
+            channelRepository.save(channelJpa);
+
+            channelPublisher.publishChannelEdit(serverChannelJpa.getId().getServer().getId(), serverChannelJpa.toDto());
+
         } else if (!verifyFriendship(channelId, accountJpa)) {
             throw new EntityNotFoundException(ErrorMessages.NOT_FRIENDS.formatted(accountJpa.getUsername()));
+        } else {
+            throw new InvalidOperationException(ErrorMessages.INVALID_CHANNEL_NAME_REQUEST);
         }
-        channelJpa.setName(newName);
-        channelRepository.save(channelJpa);
     }
 
     public void deleteServerChannel(Long channelId, Long accountId, String token) {
@@ -106,6 +114,8 @@ public class ChannelService {
         ServerChannelJpa serverChannelJpa = getValidServerChannel(channelId);
 
         serverService.validateOwner(serverChannelJpa.getId().getServer().getId(), accountId, token);
+
+        channelPublisher.publishChannelDelete(serverChannelJpa.getId().getServer().getId(), serverChannelJpa.toDto());
 
         channelRepository.delete(channelJpa);
     }
@@ -123,7 +133,8 @@ public class ChannelService {
             throw new EntityNotFoundException(ErrorMessages.NOT_FRIENDS.formatted(accountJpa.getUsername()));
         }
 
-        messageRepository.save(MessageJpa.create(accountJpa, newMessage.content(), channelJpa, MessageType.TEXT));
+        MessageJpa messageJpa = messageRepository.save(MessageJpa.create(accountJpa, newMessage.content(), channelJpa, MessageType.TEXT));
+        messagePublisher.publishMessage(messageJpa.toDto());
     }
 
     public void sendImageMessage(Long channelId, MultipartFile image, Long accountId, String token) {

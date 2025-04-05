@@ -20,4 +20,5 @@ public class ErrorMessages {
     public static final String CHANNEL_NOT_OF_TYPE = "Channel is not of type %s and cannot have operations given type applied to it";
     public static final String FILE_NOT_FOUND = "No file with id of %s exists";
     public static final String FILE_PROCESSING_ERROR = "Error occurred when processing file";
+    public static final String INVALID_CHANNEL_NAME_REQUEST = "Direct Channels cannot have their names checked";
 }

@@ -29,7 +29,7 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    @PostMapping("/username/{accountId}")
+    @PatchMapping("/{accountId}/username")
     @Operation(summary = "Update a users username")
     void changeUsername(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
@@ -48,7 +48,7 @@ public class AccountController {
         return accountService.getAccount(accountId, token);
     }
 
-    @GetMapping("/friend/{accountId}")
+    @GetMapping("/{accountId}/friend")
     @Operation(summary = "Get a list of all a users friends")
     List<Account> getFriends(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
@@ -57,7 +57,7 @@ public class AccountController {
         return accountService.getFriends(accountId, token);
     }
 
-    @GetMapping("/friend/request/{accountId}")
+    @GetMapping("/{accountId}/friend/request")
     @Operation(summary = "Get a list of all friend requests")
     List<FriendRequest> getFriendRequests(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
@@ -67,28 +67,28 @@ public class AccountController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PostMapping("/friend/request")
+    @PostMapping("/{accountId}/friend/request")
     @Operation(summary = "Send a friend request to a specific user via their username")
     void sendFriendRequest(
-            @RequestParam @NotNull(message = "A valid username to send a friend request to is required") String username,
-            @RequestParam @NotNull(message = "Account ID is required") Long accountId,
-            @RequestParam @NotNull(message = "Token is required") String token
+            @PathVariable @NotNull(message = "Account ID is required") Long accountId,
+            @RequestParam @NotNull(message = "Token is required") String token,
+            @RequestParam @NotNull(message = "A valid username to send a friend request to is required") String username
     ) {
         accountService.sendFriendRequest(accountId, token, username);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PatchMapping("/friend/request/{requestId}")
+    @PatchMapping("/{accountId}/friend/request/{requestId}")
     @Operation(summary = "Accept a friend request")
     void acceptFriendRequest(
             @PathVariable @NotNull(message = "The id of the FriendRequest is required") Long requestId,
-            @RequestParam @NotNull(message = "Account ID is required") Long accountId,
+            @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ){
         accountService.acceptFriendRequest(accountId, token, requestId);
     }
 
-    @GetMapping("/server/invite/{accountId}")
+    @GetMapping("/{accountId}/server/invite")
     @Operation(summary = "Get a list of all server invites")
     List<ServerInvite> getServerInvites(
         @PathVariable @NotNull(message = "Account ID is required") Long accountId,
@@ -98,17 +98,17 @@ public class AccountController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PatchMapping("/server/invite/{inviteId}")
+    @PatchMapping("/{accountId}/server/invite/{inviteId}")
     @Operation(summary = "Accept an invite to a server")
     void acceptServerInvite(
             @PathVariable @NotNull(message = "The ID of the ServerInvite is required") Long inviteId,
-            @RequestParam @NotNull(message = "Account ID is required") Long accountId,
+            @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
         accountService.acceptServerInvite(accountId, inviteId, token);
     }
 
-    @PatchMapping(value = "/pic/{accountId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/{accountId}/pic", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Update a users profile picture")
     String changeProfilePicture(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
@@ -117,4 +117,16 @@ public class AccountController {
             ) {
         return accountService.changeProfilePic(accountId, token, image);
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping(value = "/{accountId}/bio")
+    @Operation(summary = "Update a users bio")
+    void changeBio(
+            @PathVariable @NotNull(message = "Account ID is required") Long accountId,
+            @RequestParam @NotNull(message = "Token is required") String token,
+            @RequestBody @NotNull(message = "A new user biography is required") String newBio
+    ) {
+        
+    }
+
 }

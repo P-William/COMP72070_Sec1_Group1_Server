@@ -1,5 +1,6 @@
 package com.group11.accord.jpa.server.member;
 
+import com.group11.accord.api.server.members.ServerKick;
 import com.group11.accord.jpa.server.ServerJpa;
 import com.group11.accord.jpa.user.AccountJpa;
 import jakarta.persistence.*;
@@ -53,5 +54,16 @@ public class ServerKickJpa {
                 .reason(reason)
                 .kickedAt(LocalDateTime.now())
                 .build();
+    }
+
+    public ServerKick toDto() {
+        return new ServerKick(
+                id,
+                server.toBasicDto(),
+                kickedUser.toDto(),
+                kickedBy.toDto(),
+                kickedAt,
+                reason
+        );
     }
 }

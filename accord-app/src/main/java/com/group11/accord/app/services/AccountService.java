@@ -1,9 +1,12 @@
 package com.group11.accord.app.services;
 
 import com.group11.accord.api.server.members.ServerInvite;
+import com.group11.accord.api.server.members.UserAdded;
 import com.group11.accord.api.user.Account;
 import com.group11.accord.api.user.friend.FriendRequest;
 import com.group11.accord.app.exceptions.ErrorMessages;
+import com.group11.accord.app.websockets.ServerPublisher;
+import com.group11.accord.app.websockets.UserPublisher;
 import com.group11.accord.jpa.channel.ChannelJpa;
 import com.group11.accord.jpa.channel.ChannelRepository;
 import com.group11.accord.jpa.channel.UserChannelJpa;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -37,6 +41,8 @@ public class AccountService {
     private final FileService fileService;
     private final ChannelRepository channelRepository;
     private final UserChannelRepository userChannelRepository;
+    private final UserPublisher userPublisher;
+    private final ServerPublisher serverPublisher;
 
     public void updateUsername(Long id, String token, String username) {
         authorizationService.validateSession(id, token);
@@ -107,20 +113,22 @@ public class AccountService {
             throw new EntityExistsException(ErrorMessages.FRIEND_REQUEST_ALREADY_EXISTS.formatted(receiver.getUsername()));
         }
 
-        friendRequestRepository.save(FriendRequestJpa.create(sender, receiver));
+        FriendRequestJpa friendRequestJpa = FriendRequestJpa.create(sender, receiver);
+        friendRequestRepository.save(friendRequestJpa);
+        userPublisher.publishFriendRequest(friendRequestJpa.toDto());
     }
 
-    public void acceptFriendRequest(Long id, String token, Long requestId) {
-        authorizationService.validateSession(id, token);
+    public void acceptFriendRequest(Long accountId, String token, Long requestId) {
+        authorizationService.validateSession(accountId, token);
 
-        AccountJpa friend = accountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(id)));
+        AccountJpa friend = accountRepository.findById(accountId)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(accountId)));
 
         FriendRequestJpa friendRequest = friendRequestRepository.findById(requestId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_FRIEND_REQUEST_WITH_ID.formatted(requestId)));
 
         AccountJpa sender = accountRepository.findById(friendRequest.getSender().getId())
-                        .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(id)));
+                        .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(accountId)));
 
         //If by some means the client side trys to accept an existing request with an existing friend then we will deny it
         if (friendRepository.existsById(new FriendId(sender, friend))){
@@ -130,6 +138,10 @@ public class AccountService {
         friendRepository.save(FriendJpa.create(sender, friend));
         friendRepository.save(FriendJpa.create(friend, sender));
 
+        userPublisher.publishFriendAccept(friend.getId(), sender.toDto());
+        userPublisher.publishFriendAccept(sender.getId(), friend.toDto());
+
+        //Creates the dm channel between the two new friends
         ChannelJpa channelJpa = ChannelJpa.create(sender.getUsername() + " and " + friend.getUsername(), true);
         channelRepository.save(channelJpa);
 
@@ -162,13 +174,17 @@ public class AccountService {
             throw new EntityExistsException(ErrorMessages.ALREADY_MEMBER.formatted(inviteJpa.getServer().getName()));
         }
 
-        serverMemberRepository.save(ServerMemberJpa.create(accountJpa, inviteJpa.getServer()));
+        ServerMemberJpa serverMemberJpa = ServerMemberJpa.create(accountJpa, inviteJpa.getServer());
+        serverMemberRepository.save(serverMemberJpa);
+        serverPublisher.publishUserAdded(new UserAdded(inviteJpa.getServer().toBasicDto(), accountJpa.toDto(), inviteJpa.getSender().toDto(), LocalDateTime.now()));
     }
 
     public String changeProfilePic(Long accountId, String token, MultipartFile image){
         AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
 
         accountJpa.setProfilePicUrl(fileService.saveImage(image));
+
+        userPublisher.publishAccountEdit(accountId, accountJpa.toDto());
 
         return accountJpa.getProfilePicUrl();
     }

@@ -19,7 +19,6 @@ public class ServerPublisher {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-
     public void publishServerEdit(ServerEdit serverEdit) {
         String topic = ServerRouteBuilder.editServer(serverEdit);
         messagingTemplate.convertAndSend(topic, serverEdit);
