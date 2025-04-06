@@ -14,20 +14,20 @@ public class MessagePublisher {
 
     private final SimpMessagingTemplate messagingTemplate;
 
-    public void publishMessage(Message message) {
-        String topic = MessageRouteBuilder.newMessage(message.id(), message.channelId());
+    public void publishMessage(Long serverId, Message message) {
+        String topic = MessageRouteBuilder.newMessage(serverId, message.channelId());
         messagingTemplate.convertAndSend(topic, message);
         log.debug("Publishing new message {} to channel {} from account {}", message.id(), message.channelId(), message.account().id());
     }
 
-    public void publishMessageEdit(Message message) {
-        String topic = MessageRouteBuilder.editedMessage(message.id(), message.channelId());
+    public void publishMessageEdit(Long serverId, Message message) {
+        String topic = MessageRouteBuilder.editedMessage(serverId, message.channelId());
         messagingTemplate.convertAndSend(topic, message);
         log.debug("Publishing edit message {} in channel {} from account {}", message.id(), message.channelId(), message.account().id());
     }
 
-    public void publishMessageDelete(Message message) {
-        String topic = MessageRouteBuilder.deletedMessage(message.id(), message.channelId());
+    public void publishMessageDelete(Long serverId, Message message) {
+        String topic = MessageRouteBuilder.deletedMessage(serverId, message.channelId());
         messagingTemplate.convertAndSend(topic, message);
         log.debug("Publishing delete message {} in channel {} from account {}", message.id(), message.channelId(), message.account().id());
     }

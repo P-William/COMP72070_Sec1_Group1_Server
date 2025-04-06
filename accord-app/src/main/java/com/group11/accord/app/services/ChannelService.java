@@ -125,8 +125,10 @@ public class ChannelService {
 
         ChannelJpa channelJpa = getValidChannel(channelId);
 
+        Long serverId = null;
         if (!channelJpa.getIsPrivate()){
             ServerChannelJpa serverChannelJpa = getValidServerChannel(channelId);
+            serverId = serverChannelJpa.getId().getServer().getId();
             serverService.verifyIsServerMember(accountId, serverChannelJpa.getId().getServer().getId());
         }
         else if (!verifyFriendship(channelId, accountJpa)){
@@ -134,7 +136,7 @@ public class ChannelService {
         }
 
         MessageJpa messageJpa = messageRepository.save(MessageJpa.create(accountJpa, newMessage.content(), channelJpa, MessageType.TEXT));
-        messagePublisher.publishMessage(messageJpa.toDto());
+        messagePublisher.publishMessage(serverId, messageJpa.toDto());
     }
 
     public void sendImageMessage(Long channelId, MultipartFile image, Long accountId, String token) {
@@ -142,15 +144,18 @@ public class ChannelService {
 
         ChannelJpa channelJpa = getValidChannel(channelId);
 
+        Long serverId = null;
         if (!channelJpa.getIsPrivate()){
             ServerChannelJpa serverChannelJpa = getValidServerChannel(channelId);
+            serverId = serverChannelJpa.getId().getServer().getId();
             serverService.verifyIsServerMember(accountId, serverChannelJpa.getId().getServer().getId());
         }
         else if (!verifyFriendship(channelId, accountJpa)){
             throw new EntityNotFoundException(ErrorMessages.NOT_FRIENDS.formatted(accountJpa.getUsername()));
         }
 
-        messageRepository.save(MessageJpa.create(accountJpa, fileService.saveImage(image), channelJpa, MessageType.IMAGE));
+        MessageJpa messageJpa = messageRepository.save(MessageJpa.create(accountJpa, fileService.saveImage(image), channelJpa, MessageType.IMAGE));
+        messagePublisher.publishMessage(serverId, messageJpa.toDto());
     }
 
     public ChannelJpa getValidChannel(Long channelId) {

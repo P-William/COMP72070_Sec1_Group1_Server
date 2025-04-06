@@ -13,20 +13,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.NONE)
 public final class RouteBuilder {
 
-    public static final String FORMAT_SERVER_ID = "/{server_id}";
-    public static final String FORMAT_CHANNEL_ID = "/{channel_id}";
-    public static final String FORMAT_USER_ID = "/{user_id}";
+    public static final String FORMAT_SERVER_ID = "{server_id}";
+    public static final String FORMAT_CHANNEL_ID = "{channel_id}";
+    public static final String FORMAT_USER_ID = "{user_id}";
 
     public static final class MessageRouteBuilder {
 
         public static final String BASE = "/message";
-        public static final String TOPIC_TEMPLATE = "/{serverId}/{channelId}";
+        public static final String TOPIC_TEMPLATE = "/{server_id}/{channel_id}";
 
         public static String newMessage(Long serverId, Long channelId) {
             String topic = TOPIC_TEMPLATE
                 .replace(FORMAT_SERVER_ID, serverId.toString())
                 .replace(FORMAT_CHANNEL_ID, channelId.toString());
-            return BASE + "/new/" + topic;
+            return BASE + "/new" + topic;
         }
 
         public static String editedMessage(Long serverId, Long channelId) {
@@ -47,7 +47,7 @@ public final class RouteBuilder {
     public static final class ChannelRouteBuilder {
 
         public static final String BASE = "/channel";
-        public static final String TOPIC_TEMPLATE = "/{serverId}";
+        public static final String TOPIC_TEMPLATE = "/{server_id}";
 
         public static String createdChannel(Long serverId) {
             return BASE + "/new/" + serverId;
