@@ -21,7 +21,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker(TOPICS.toArray(new String[0]));
+        config.enableSimpleBroker(TOPICS.toArray(new String[0]))
+            .setHeartbeatValue(new long[]{15000, 15000});
     }
 
     @Override
