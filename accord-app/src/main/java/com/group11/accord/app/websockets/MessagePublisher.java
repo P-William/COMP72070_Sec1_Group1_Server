@@ -20,6 +20,12 @@ public class MessagePublisher {
         log.debug("Publishing new message {} to channel {} from account {}", message.id(), message.channelId(), message.account().id());
     }
 
+    public void publishDmMessage(Message message) {
+        String topic = MessageRouteBuilder.newDmMessage(message.channelId());
+        messagingTemplate.convertAndSend(topic, message);
+        log.debug("Publishing new message {} to channel {} from account {}", message.id(), message.channelId(), message.account().id());
+    }
+
     public void publishMessageEdit(Long serverId, Message message) {
         String topic = MessageRouteBuilder.editedMessage(serverId, message.channelId());
         messagingTemplate.convertAndSend(topic, message);
