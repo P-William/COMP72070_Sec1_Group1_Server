@@ -182,13 +182,35 @@ class ChannelTests {
     }
 
     @Test
-    void createServerChannel_Success() {
+    void getServerChannels_Success() {
+        Long id = 1L;
+        String token = "token";
 
+        ServerChannelJpa serverChannelJpa = mock(ServerChannelJpa.class);
+
+        when(serverChannelRepository.findAllByIdServerId(id)).thenReturn(List.of(serverChannelJpa));
+
+        List<Channel> channels = channelService.getServerChannels(id, id, token);
+        assertNotNull(channels);
     }
 
     @Test
     void deleteServerChannel_Success() {
+        Long id = 1L;
+        String token = "token";
 
+        ChannelJpa channelJpa = mock(ChannelJpa.class);
+        ServerChannelJpa serverChannelJpa = mock(ServerChannelJpa.class);
+        ServerChannelId serverChannelId = mock(ServerChannelId.class);
+        ServerJpa serverJpa = mock(ServerJpa.class);
+
+        when(channelRepository.findById(id)).thenReturn(Optional.of(channelJpa));
+        when(serverChannelRepository.findByIdChannelId(id)).thenReturn(Optional.of(serverChannelJpa));
+        when(serverChannelId.getServer()).thenReturn(serverJpa);
+        when(serverChannelJpa.getId()).thenReturn(serverChannelId);
+
+        channelService.deleteServerChannel(id, id, token);
+        verify(channelRepository).delete(any(ChannelJpa.class));
     }
 
 }
