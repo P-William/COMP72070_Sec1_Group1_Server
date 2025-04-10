@@ -1,6 +1,7 @@
 package com.group11.accord.jpa.channel;
 
 import com.group11.accord.jpa.user.AccountJpa;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -27,7 +28,7 @@ public class UserChannelId {
     @JoinColumn(name = "account_two_id")
     private AccountJpa accountTwo;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "channel_id")
     private ChannelJpa channel;
 

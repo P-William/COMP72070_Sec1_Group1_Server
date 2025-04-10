@@ -138,4 +138,15 @@ public class AccountController {
         
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "/{accountId}/friend")
+    @Operation(summary = "Remove a friend")
+    void removeFriend(
+            @PathVariable @NotNull(message = "Account ID is required") Long accountId,
+            @RequestParam @NotNull(message = "Token is required") String token,
+            @RequestParam @NotNull(message = "A id of a friend is needed") Long friendId
+    ) {
+        accountService.removeFriend(accountId, token, friendId);
+    }
+
 }

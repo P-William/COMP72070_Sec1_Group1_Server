@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -199,4 +200,36 @@ public class AccountService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_USERNAME.formatted(username)));
     }
 
+    public void removeFriend(Long accountId, String token, Long friendId) {
+        AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
+
+        AccountJpa friend = findAccountWithId(friendId);
+
+        if (!friendRepository.existsById(new FriendId(accountJpa, friend)) || !friendRepository.existsById(new FriendId(friend, accountJpa))) {
+            throw new EntityNotFoundException(ErrorMessages.NOT_FRIENDS.formatted(friend.getUsername()));
+        }
+
+        Optional<UserChannelJpa> userChannelJpa = userChannelRepository.findByIdAccountOneAndIdAccountTwo(accountJpa, friend);
+        if (userChannelJpa.isEmpty()) {
+            userChannelJpa = userChannelRepository.findByIdAccountOneAndIdAccountTwo(friend, accountJpa);
+            if (userChannelJpa.isEmpty()) {
+                throw new EntityNotFoundException(ErrorMessages.NOT_FRIENDS.formatted(friend.getUsername()));
+            }
+        }
+
+        ChannelJpa channelJpa = userChannelJpa.get().getId().getChannel();
+
+        Optional<FriendJpa> friendOne = friendRepository.findById(new FriendId(accountJpa, friend));
+        Optional<FriendJpa> friendTwo = friendRepository.findById(new FriendId(friend, accountJpa));
+
+        if (friendOne.isEmpty() || friendTwo.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessages.NOT_FRIENDS.formatted(friend.getUsername()));
+        }
+
+        userChannelRepository.delete(userChannelJpa.get());
+        channelRepository.delete(channelJpa);
+        friendRepository.delete(friendOne.get());
+        friendRepository.delete(friendTwo.get());
+
+    }
 }
