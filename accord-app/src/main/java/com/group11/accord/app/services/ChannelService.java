@@ -159,7 +159,11 @@ public class ChannelService {
         }
 
         MessageJpa messageJpa = messageRepository.save(MessageJpa.create(accountJpa, fileService.saveImage(image), channelJpa, MessageType.IMAGE));
-        messagePublisher.publishMessage(serverId, messageJpa.toDto());
+        if (serverId != null) {
+            messagePublisher.publishMessage(serverId, messageJpa.toDto());
+        } else {
+            messagePublisher.publishDmMessage(messageJpa.toDto());
+        }
     }
 
     public ChannelJpa getValidChannel(Long channelId) {
