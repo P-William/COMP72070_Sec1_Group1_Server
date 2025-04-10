@@ -56,7 +56,7 @@ public class AuthorizationService {
     public void logoutAccount(Long accountId, String token) {
         validateSession(accountId, token);
 
-        sessionRepository.deleteByIdAccountIdAndIdToken(accountId, token);
+        sessionRepository.deleteByIdAccountId(accountId);
     }
 
     public void changePassword(Long accountId, String token, String newPassword, String oldPassword) {

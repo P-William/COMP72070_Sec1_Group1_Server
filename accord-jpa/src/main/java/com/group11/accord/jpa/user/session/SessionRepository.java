@@ -10,7 +10,7 @@ public interface SessionRepository extends JpaRepository<SessionJpa, SessionId> 
 
     void deleteAllByIdAccountId(Long accountId);
 
-    void deleteByIdAccountIdAndIdToken(Long accountId, String token);
+    void deleteByIdAccountId(Long accountId);
 
     default boolean sessionExists(Long accountId, String token) {
         return existsByIdAccountIdAndIdToken(accountId, token);
