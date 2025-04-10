@@ -135,7 +135,7 @@ public class AccountController {
             @RequestParam @NotNull(message = "Token is required") String token,
             @RequestBody @NotNull(message = "A new user biography is required") String newBio
     ) {
-        
+        accountService.updateBio(accountId, token, newBio);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

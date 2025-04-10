@@ -232,4 +232,12 @@ public class AccountService {
         friendRepository.delete(friendTwo.get());
 
     }
+
+    public void updateBio(Long accountId, String token, String newBio) {
+        AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
+
+        accountJpa.setBio(newBio);
+
+        accountRepository.save(accountJpa);
+    }
 }
