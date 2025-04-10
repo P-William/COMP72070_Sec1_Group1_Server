@@ -33,7 +33,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ChannelTests {
+class ChannelTests {
     @Mock
     private FriendRepository friendRepository;
     @Mock
@@ -181,5 +181,14 @@ public class ChannelTests {
         verify(messageRepository).save(any(MessageJpa.class));
     }
 
+    @Test
+    void createServerChannel_Success() {
+
+    }
+
+    @Test
+    void deleteServerChannel_Success() {
+
+    }
 
 }
