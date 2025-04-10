@@ -3,6 +3,7 @@ package com.group11.accord.app.controllers;
 import com.group11.accord.api.server.BasicServer;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
+import com.group11.accord.api.user.Account;
 import com.group11.accord.app.services.ServerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -133,5 +134,15 @@ public class ServerController {
     ) {
         log.debug("Received request to leave server {} from user {}", serverId, accountId);
         serverService.leaveServer(serverId, accountId, token);
+    }
+
+    @GetMapping("/{serverId}/members")
+    @Operation(summary = "Get a list of server members")
+    List<Account> getServerMembers(
+            @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
+            @RequestParam @NotNull(message = "Account ID is required") Long accountId,
+            @RequestParam @NotNull(message = "Token is required") String token
+    ) {
+        return serverService.getServerMembers(serverId, accountId, token);
     }
 }

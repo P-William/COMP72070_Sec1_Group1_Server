@@ -6,6 +6,7 @@ import com.group11.accord.api.server.ServerDeletion;
 import com.group11.accord.api.server.ServerEdit;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
+import com.group11.accord.api.user.Account;
 import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
 import com.group11.accord.app.exceptions.ErrorMessages;
 import com.group11.accord.app.exceptions.ServerErrorException;
@@ -166,6 +167,20 @@ public class ServerService {
         verifyIsServerMember(accountId, serverId);
 
         serverMemberRepository.deleteByIdAccountIdAndIdServerId(accountId, serverId);
+    }
+
+    public List<Account> getServerMembers(Long serverId, Long accountId, String token) {
+        AccountJpa accountJpa = authorizationService.findValidAccount(accountId, token);
+
+        verifyIsServerMember(accountJpa.getId(), serverId);
+
+        ServerJpa serverJpa = findServerWithId(serverId);
+
+        return serverJpa
+                .getMembers()
+                .stream()
+                .map(AccountJpa::toDto)
+                .toList();
     }
 
     public ServerJpa validateOwner(Long serverId, Long accountId, String token){
