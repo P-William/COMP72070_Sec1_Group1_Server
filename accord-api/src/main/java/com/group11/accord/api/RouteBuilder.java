@@ -29,6 +29,10 @@ public final class RouteBuilder {
             return BASE + "/new" + topic;
         }
 
+        public static String newDmMessage(Long channelId) {
+            return BASE + "/new/dm/" + channelId;
+        }
+
         public static String editedMessage(Long serverId, Long channelId) {
             String topic = TOPIC_TEMPLATE
                 .replace(FORMAT_SERVER_ID, serverId.toString())

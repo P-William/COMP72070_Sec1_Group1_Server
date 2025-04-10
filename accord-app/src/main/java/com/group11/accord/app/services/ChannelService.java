@@ -136,7 +136,11 @@ public class ChannelService {
         }
 
         MessageJpa messageJpa = messageRepository.save(MessageJpa.create(accountJpa, newMessage.content(), channelJpa, MessageType.TEXT));
-        messagePublisher.publishMessage(serverId, messageJpa.toDto());
+        if (serverId != null) {
+            messagePublisher.publishMessage(serverId, messageJpa.toDto());
+        } else {
+            messagePublisher.publishDmMessage(messageJpa.toDto());
+        }
     }
 
     public void sendImageMessage(Long channelId, MultipartFile image, Long accountId, String token) {

@@ -7,6 +7,12 @@ Base path: `/message`
 - Returns: `Message`
 - Return Definition: [here](https://github.com/P-William/COMP72070_Sec1_Group1_Server/tree/main/accord-api/src/main/java/com/group11/accord/api/message/Message.java)
 
+### New DM Message
+- Description: A new DM message has been sent.
+- Route: `/new/dm/{channelId}`
+- Returns: `Message`
+- Return Definition: [here](https://github.com/P-William/COMP72070_Sec1_Group1_Server/tree/main/accord-api/src/main/java/com/group11/accord/api/message/Message.java)
+
 ### Edited Message
 - Description: A message has been edited.
 - Route: `/edit/{serverId}/{channelId}`
