@@ -11,6 +11,7 @@ import com.group11.accord.jpa.channel.ChannelJpa;
 import com.group11.accord.jpa.channel.ChannelRepository;
 import com.group11.accord.jpa.channel.UserChannelJpa;
 import com.group11.accord.jpa.channel.UserChannelRepository;
+import com.group11.accord.jpa.message.MessageRepository;
 import com.group11.accord.jpa.server.member.ServerInviteJpa;
 import com.group11.accord.jpa.server.member.ServerInviteRepository;
 import com.group11.accord.jpa.server.member.ServerMemberJpa;
@@ -44,6 +45,7 @@ public class AccountService {
     private final UserChannelRepository userChannelRepository;
     private final UserPublisher userPublisher;
     private final ServerPublisher serverPublisher;
+    private final MessageRepository messageRepository;
 
     public void updateUsername(Long id, String token, String username) {
         authorizationService.validateSession(id, token);
@@ -226,6 +228,7 @@ public class AccountService {
             throw new EntityNotFoundException(ErrorMessages.NOT_FRIENDS.formatted(friend.getUsername()));
         }
 
+        messageRepository.deleteAllByChannelId(channelJpa.getId());
         userChannelRepository.delete(userChannelJpa.get());
         channelRepository.delete(channelJpa);
         friendRepository.delete(friendOne.get());
