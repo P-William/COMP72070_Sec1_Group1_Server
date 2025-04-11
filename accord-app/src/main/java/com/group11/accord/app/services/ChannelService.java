@@ -117,6 +117,8 @@ public class ChannelService {
 
         channelPublisher.publishChannelDelete(serverChannelJpa.getId().getServer().getId(), serverChannelJpa.toDto());
 
+        messageRepository.deleteAllByChannelId(channelJpa.getId());
+        serverChannelRepository.delete(serverChannelJpa);
         channelRepository.delete(channelJpa);
     }
 

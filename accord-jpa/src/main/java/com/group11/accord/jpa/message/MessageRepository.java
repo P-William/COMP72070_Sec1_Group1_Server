@@ -11,4 +11,5 @@ public interface MessageRepository extends JpaRepository<MessageJpa, Long> {
 
     List<MessageJpa> findByChannel(ChannelJpa channel);
 
+    void deleteAllByChannelId(Long channelId);
 }
