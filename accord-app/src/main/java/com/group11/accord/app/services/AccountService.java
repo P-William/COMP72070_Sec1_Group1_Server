@@ -147,6 +147,8 @@ public class AccountService {
         channelRepository.save(channelJpa);
 
         userChannelRepository.save(UserChannelJpa.create(sender, friend, channelJpa));
+
+        friendRequestRepository.delete(friendRequest);
     }
 
     public List<ServerInvite> getServerInvites(Long id, String token) {
@@ -178,6 +180,7 @@ public class AccountService {
         ServerMemberJpa serverMemberJpa = ServerMemberJpa.create(accountJpa, inviteJpa.getServer());
         serverMemberRepository.save(serverMemberJpa);
         serverPublisher.publishUserAdded(new UserAdded(inviteJpa.getServer().toBasicDto(), accountJpa.toDto(), inviteJpa.getSender().toDto(), LocalDateTime.now()));
+        serverInviteRepository.delete(inviteJpa);
     }
 
     public String changeProfilePic(Long accountId, String token, MultipartFile image){
