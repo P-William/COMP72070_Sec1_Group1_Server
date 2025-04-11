@@ -117,6 +117,7 @@ public class ChannelService {
 
         channelPublisher.publishChannelDelete(serverChannelJpa.getId().getServer().getId(), serverChannelJpa.toDto());
 
+        serverChannelRepository.delete(serverChannelJpa);
         channelRepository.delete(channelJpa);
     }
 

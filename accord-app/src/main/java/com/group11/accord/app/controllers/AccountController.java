@@ -6,6 +6,7 @@ import com.group11.accord.api.user.friend.FriendRequest;
 import com.group11.accord.app.services.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -121,7 +122,7 @@ public class AccountController {
     String changeProfilePicture(
             @PathVariable @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token,
-            @RequestParam @NotNull(message = "A valid image is required") MultipartFile image
+            @RequestParam @NotNull(message = "A valid image is required") @Valid MultipartFile image
     ) {
         log.debug("Received request from {} to update profile picture.", accountId);
         return accountService.changeProfilePic(accountId, token, image);
