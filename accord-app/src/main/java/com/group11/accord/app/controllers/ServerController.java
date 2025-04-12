@@ -3,6 +3,8 @@ package com.group11.accord.app.controllers;
 import com.group11.accord.api.server.BasicServer;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
+import com.group11.accord.api.server.members.ServerBan;
+import com.group11.accord.api.server.members.ServerKick;
 import com.group11.accord.api.user.Account;
 import com.group11.accord.app.services.ServerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -158,5 +160,36 @@ public class ServerController {
     ) {
         log.debug("Received request to transfer ownership from user {} to user {}", accountId, newOwnerId);
         serverService.transferOwnership(serverId, newOwnerId, accountId, token);
+    }
+
+    @GetMapping("/{serverId}/kick")
+    @Operation(summary = "Retrieve all users who have been kicked from a server")
+    List<ServerKick> getKickedUsers(
+            @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
+            @RequestParam @NotNull(message = "Account ID is required") Long accountId,
+            @RequestParam @NotNull(message = "Token is required") String token
+    ) {
+        return serverService.getKickedUsers(serverId, accountId, token);
+    }
+
+    @GetMapping("/{serverId}/ban")
+    @Operation(summary = "Retrieve all users who have been banned from a server")
+    List<ServerBan> getBannedUsers(
+            @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
+            @RequestParam @NotNull(message = "Account ID is required") Long accountId,
+            @RequestParam @NotNull(message = "Token is required") String token
+    ) {
+        return serverService.getBannedUsers(serverId, accountId, token);
+    }
+
+    @PatchMapping("/{serverId}/ban")
+    @Operation(summary = "Revoke a ban placed on a user")
+    void unbanUser(
+            @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
+            @RequestParam @NotNull(message = "The ID of the user to unban is required") Long bannedUserId,
+            @RequestParam @NotNull(message = "Account ID is required") Long accountId,
+            @RequestParam @NotNull(message = "Token is required") String token
+    ) {
+        serverService.unbanUser(serverId, bannedUserId, accountId, token);
     }
 }

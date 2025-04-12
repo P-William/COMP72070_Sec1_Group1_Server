@@ -6,6 +6,8 @@ import com.group11.accord.api.server.ServerDeletion;
 import com.group11.accord.api.server.ServerEdit;
 import com.group11.accord.api.server.members.NewServerBan;
 import com.group11.accord.api.server.members.NewServerKick;
+import com.group11.accord.api.server.members.ServerBan;
+import com.group11.accord.api.server.members.ServerKick;
 import com.group11.accord.api.user.Account;
 import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
 import com.group11.accord.app.exceptions.ErrorMessages;
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -106,11 +109,18 @@ public class ServerService {
     }
 
     public void inviteToServer(Long serverId, String username, Long accountId, String token) {
-        ServerJpa serverJpa = validateOwner(serverId, accountId, token);
+        authorizationService.validateSession(accountId, token);
+
         verifyIsServerMember(accountId, serverId);
+
+        ServerJpa serverJpa = findServerWithId(serverId);
 
         if (serverBanRepository.existsByBannedUserUsernameAndServerId(username, serverId)) {
             throw new InvalidOperationException(ErrorMessages.USER_BANNED_FROM_SERVER.formatted(username));
+        }
+
+        if (serverKickRepository.existsByServerIdAndKickedUserUsername(serverId, username)) {
+            serverKickRepository.deleteByServerIdAndKickedUserUsername(serverId, username);
         }
 
         boolean alreadyMember = serverJpa.getMembers()
@@ -196,8 +206,6 @@ public class ServerService {
     public void transferOwnership(Long serverId, Long newOwnerId, Long accountId, String token) {
         ServerJpa serverJpa = validateOwner(serverId, accountId, token);
 
-        verifyIsServerMember(newOwnerId, serverId);
-
         AccountJpa newOwner = accountService.findAccountWithId(newOwnerId);
 
         serverJpa.setOwner(newOwner);
@@ -207,8 +215,40 @@ public class ServerService {
         serverPublisher.publishServerEdit(new ServerEdit(serverJpa.getId(), serverJpa.getName(), serverJpa.getOwner().toDto()));
     }
 
+    public List<ServerKick> getKickedUsers(Long serverId, Long accountId, String token) {
+        authorizationService.validateSession(accountId, token);
+
+        verifyIsServerMember(accountId, serverId);
+
+        return serverKickRepository.findAllByServerId(serverId)
+                .stream()
+                .map(ServerKickJpa::toDto)
+                .toList();
+    }
+
+    public List<ServerBan> getBannedUsers(Long serverId, Long accountId, String token) {
+        authorizationService.validateSession(accountId, token);
+
+        verifyIsServerMember(accountId, serverId);
+
+        return serverBanRepository.findAllByServerId(serverId)
+                .stream()
+                .map(ServerBanJpa::toDto)
+                .toList();
+    }
+
+    public void unbanUser(Long serverId, Long bannedUserId, Long accountId, String token) {
+        ServerJpa serverJpa = validateOwner(serverId, accountId, token);
+
+        ServerBanJpa serverBanJpa = findServerBan(serverId, bannedUserId);
+
+        serverBanRepository.delete(serverBanJpa);
+    }
+
     public ServerJpa validateOwner(Long serverId, Long accountId, String token){
         authorizationService.validateSession(accountId, token);
+
+        verifyIsServerMember(accountId, serverId);
 
         if (!serverRepository.existsByOwnerIdAndId(accountId, serverId)){
             throw new AccountNotAuthorizedException(ErrorMessages.INVALID_SERVER_AUTHORITY.formatted(accountId));
@@ -220,6 +260,14 @@ public class ServerService {
     public ServerJpa findServerWithId(Long serverId) {
         return serverRepository.findById(serverId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_SERVER_WITH_ID.formatted(serverId)));
+    }
+
+    public ServerBanJpa findServerBan(Long serverId, Long bannedUserId) {
+        Optional<ServerBanJpa> serverBanJpa = serverBanRepository.findByServerIdAndBannedUserId(serverId, bannedUserId);
+        if (serverBanJpa.isEmpty()) {
+            throw new EntityNotFoundException(ErrorMessages.UNKNOWN_USER_BAN.formatted(bannedUserId, serverId));
+        }
+        return serverBanJpa.get();
     }
 
     public void addServerMember(AccountJpa accountJpa, ServerJpa serverJpa) {
