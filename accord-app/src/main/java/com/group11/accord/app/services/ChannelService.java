@@ -12,7 +12,6 @@ import com.group11.accord.jpa.channel.*;
 import com.group11.accord.jpa.message.MessageJpa;
 import com.group11.accord.jpa.message.MessageRepository;
 import com.group11.accord.jpa.message.MessageType;
-import com.group11.accord.jpa.server.ServerJpa;
 import com.group11.accord.jpa.user.AccountJpa;
 import com.group11.accord.jpa.user.friend.FriendId;
 import com.group11.accord.jpa.user.friend.FriendRepository;

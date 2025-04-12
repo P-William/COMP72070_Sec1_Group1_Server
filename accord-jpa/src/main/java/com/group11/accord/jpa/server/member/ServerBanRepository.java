@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ServerBanRepository extends JpaRepository<ServerBanJpa, Long> {
 
+    boolean existsByBannedUserUsernameAndServerId(String bannedUser, Long serverId);
 
 }

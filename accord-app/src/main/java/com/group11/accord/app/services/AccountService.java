@@ -5,6 +5,7 @@ import com.group11.accord.api.server.members.UserAdded;
 import com.group11.accord.api.user.Account;
 import com.group11.accord.api.user.friend.FriendRequest;
 import com.group11.accord.app.exceptions.ErrorMessages;
+import com.group11.accord.app.exceptions.InvalidOperationException;
 import com.group11.accord.app.websockets.ServerPublisher;
 import com.group11.accord.app.websockets.UserPublisher;
 import com.group11.accord.jpa.channel.ChannelJpa;
@@ -12,10 +13,7 @@ import com.group11.accord.jpa.channel.ChannelRepository;
 import com.group11.accord.jpa.channel.UserChannelJpa;
 import com.group11.accord.jpa.channel.UserChannelRepository;
 import com.group11.accord.jpa.message.MessageRepository;
-import com.group11.accord.jpa.server.member.ServerInviteJpa;
-import com.group11.accord.jpa.server.member.ServerInviteRepository;
-import com.group11.accord.jpa.server.member.ServerMemberJpa;
-import com.group11.accord.jpa.server.member.ServerMemberRepository;
+import com.group11.accord.jpa.server.member.*;
 import com.group11.accord.jpa.user.AccountJpa;
 import com.group11.accord.jpa.user.AccountRepository;
 import com.group11.accord.jpa.user.friend.*;
@@ -46,6 +44,7 @@ public class AccountService {
     private final UserPublisher userPublisher;
     private final ServerPublisher serverPublisher;
     private final MessageRepository messageRepository;
+    private final ServerBanRepository serverBanRepository;
 
     public void updateUsername(Long id, String token, String username) {
         authorizationService.validateSession(id, token);
@@ -149,6 +148,7 @@ public class AccountService {
         channelRepository.save(channelJpa);
 
         userChannelRepository.save(UserChannelJpa.create(sender, friend, channelJpa));
+        friendRequestRepository.delete(friendRequest);
     }
 
     public List<ServerInvite> getServerInvites(Long id, String token) {
@@ -165,13 +165,14 @@ public class AccountService {
     }
 
     public void acceptServerInvite(Long id, Long inviteId, String token) {
-        authorizationService.validateSession(id, token);
-
-        AccountJpa accountJpa = accountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_ACCOUNT_WITH_ID.formatted(id)));
+        AccountJpa accountJpa = authorizationService.findValidAccount(id, token);
 
         ServerInviteJpa inviteJpa = serverInviteRepository.findById(inviteId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessages.MISSING_SERVER_INVITE_WITH_ID.formatted(inviteId)));
+
+        if (serverBanRepository.existsByBannedUserUsernameAndServerId(accountJpa.getUsername(), inviteJpa.getServer().getId())) {
+            throw new InvalidOperationException(ErrorMessages.USER_BANNED_FROM_SERVER.formatted(accountJpa.getUsername()));
+        }
 
         if (serverMemberRepository.existsByIdAccountIdAndIdServerId(accountJpa.getId(), inviteJpa.getServer().getId())){
             throw new EntityExistsException(ErrorMessages.ALREADY_MEMBER.formatted(inviteJpa.getServer().getName()));
@@ -180,6 +181,7 @@ public class AccountService {
         ServerMemberJpa serverMemberJpa = ServerMemberJpa.create(accountJpa, inviteJpa.getServer());
         serverMemberRepository.save(serverMemberJpa);
         serverPublisher.publishUserAdded(new UserAdded(inviteJpa.getServer().toBasicDto(), accountJpa.toDto(), inviteJpa.getSender().toDto(), LocalDateTime.now()));
+        serverInviteRepository.delete(inviteJpa);
     }
 
     public String changeProfilePic(Long accountId, String token, MultipartFile image){
@@ -242,5 +244,6 @@ public class AccountService {
         accountJpa.setBio(newBio);
 
         accountRepository.save(accountJpa);
+        userPublisher.publishAccountEdit(accountId, accountJpa.toDto());
     }
 }

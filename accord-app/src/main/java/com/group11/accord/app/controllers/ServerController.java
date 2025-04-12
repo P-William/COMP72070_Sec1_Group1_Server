@@ -126,7 +126,7 @@ public class ServerController {
 
     @PostMapping("/leave/{serverId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Leave a server")
+    @Operation(summary = "Leave a server", description = "NOTE: The owner of the server cannot leave until they transfer ownership to another member successfully")
     void leaveServer(
             @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
             @RequestParam @NotNull(message = "Account ID is required") Long accountId,
@@ -143,6 +143,20 @@ public class ServerController {
             @RequestParam @NotNull(message = "Account ID is required") Long accountId,
             @RequestParam @NotNull(message = "Token is required") String token
     ) {
+        log.debug("Received request to get members of server {} from user {}", serverId, accountId);
         return serverService.getServerMembers(serverId, accountId, token);
+    }
+
+    @PatchMapping("/{serverId}/owner")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Transfer ownership of the server to another member of the server")
+    void transferOwnership(
+            @PathVariable @NotNull(message = "ID of the server is required") Long serverId,
+            @RequestParam @NotNull(message = "The id of the user to transfer ownership to") Long newOwnerId,
+            @RequestParam @NotNull(message = "Account ID is required") Long accountId,
+            @RequestParam @NotNull(message = "Token is required") String token
+    ) {
+        log.debug("Received request to transfer ownership from user {} to user {}", accountId, newOwnerId);
+        serverService.transferOwnership(serverId, newOwnerId, accountId, token);
     }
 }

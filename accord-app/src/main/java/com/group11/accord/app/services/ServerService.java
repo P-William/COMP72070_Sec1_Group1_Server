@@ -9,6 +9,7 @@ import com.group11.accord.api.server.members.NewServerKick;
 import com.group11.accord.api.user.Account;
 import com.group11.accord.app.exceptions.AccountNotAuthorizedException;
 import com.group11.accord.app.exceptions.ErrorMessages;
+import com.group11.accord.app.exceptions.InvalidOperationException;
 import com.group11.accord.app.exceptions.ServerErrorException;
 import com.group11.accord.app.websockets.ChannelPublisher;
 import com.group11.accord.app.websockets.ServerPublisher;
@@ -108,6 +109,10 @@ public class ServerService {
         ServerJpa serverJpa = validateOwner(serverId, accountId, token);
         verifyIsServerMember(accountId, serverId);
 
+        if (serverBanRepository.existsByBannedUserUsernameAndServerId(username, serverId)) {
+            throw new InvalidOperationException(ErrorMessages.USER_BANNED_FROM_SERVER.formatted(username));
+        }
+
         boolean alreadyMember = serverJpa.getMembers()
                 .stream()
                 .anyMatch(member -> member.getUsername().equals(username));
@@ -166,6 +171,11 @@ public class ServerService {
 
         verifyIsServerMember(accountId, serverId);
 
+        ServerJpa serverJpa = findServerWithId(serverId);
+        if (serverJpa.getOwner().getId().equals(accountId)) {
+            throw new InvalidOperationException(ErrorMessages.OWNER_CANNOT_LEAVE_SERVER);
+        }
+
         serverMemberRepository.deleteByIdAccountIdAndIdServerId(accountId, serverId);
     }
 
@@ -181,6 +191,20 @@ public class ServerService {
                 .stream()
                 .map(AccountJpa::toDto)
                 .toList();
+    }
+
+    public void transferOwnership(Long serverId, Long newOwnerId, Long accountId, String token) {
+        ServerJpa serverJpa = validateOwner(serverId, accountId, token);
+
+        verifyIsServerMember(newOwnerId, serverId);
+
+        AccountJpa newOwner = accountService.findAccountWithId(newOwnerId);
+
+        serverJpa.setOwner(newOwner);
+
+        serverJpa = serverRepository.save(serverJpa);
+
+        serverPublisher.publishServerEdit(new ServerEdit(serverJpa.getId(), serverJpa.getName(), serverJpa.getOwner().toDto()));
     }
 
     public ServerJpa validateOwner(Long serverId, Long accountId, String token){

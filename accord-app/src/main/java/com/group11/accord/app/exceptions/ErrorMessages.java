@@ -21,4 +21,6 @@ public class ErrorMessages {
     public static final String FILE_NOT_FOUND = "No file with id of %s exists";
     public static final String FILE_PROCESSING_ERROR = "Error occurred when processing file";
     public static final String INVALID_CHANNEL_NAME_REQUEST = "Direct Channels cannot have their names checked";
+    public static final String USER_BANNED_FROM_SERVER = "The user %s cannot be invited to the server as they are banned";
+    public static final String OWNER_CANNOT_LEAVE_SERVER = "The owner cannot leave the server. Ownership can be transferred to enable this user to leave";
 }

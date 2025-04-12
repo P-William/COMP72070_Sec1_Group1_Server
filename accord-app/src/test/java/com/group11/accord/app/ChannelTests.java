@@ -12,7 +12,6 @@ import com.group11.accord.app.websockets.MessagePublisher;
 import com.group11.accord.jpa.channel.*;
 import com.group11.accord.jpa.message.MessageJpa;
 import com.group11.accord.jpa.message.MessageRepository;
-import com.group11.accord.jpa.message.MessageType;
 import com.group11.accord.jpa.server.ServerJpa;
 import com.group11.accord.jpa.user.AccountJpa;
 import com.group11.accord.jpa.user.friend.FriendId;
@@ -24,12 +23,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
